@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Explorers - Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="https://cdn-icons-png.flaticon.com/512/3212/3212581.png" alt="Logo" width="30" height="30" class="me-2">
+                Cosmic Explorers
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="challenges.html">Challenges</a></li>
+                    <li class="nav-item"><a class="nav-link" href="planets.html">Planets</a></li>
+                    <li class="nav-item"><a class="nav-link" href="leaderboard.html">Leaderboard</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="profile.html">Profile</a></li>
+                    <li class="nav-item"><a id="logoutButton" href="#" class="nav-link">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow-1 container py-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card text-center p-4">
+                    <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center mb-4" 
+                         style="width: 120px; height: 120px; font-size: 3.5rem; background: var(--glass-bg); border: 3px solid var(--cosmic-purple); box-shadow: 0 0 20px rgba(157, 80, 187, 0.4);">
+                        👨‍🚀
+                    </div>
+                    <h2 id="profileUsername" class="fw-bold text-white">Explorer</h2>
+                    <p class="opacity-50 mb-4" id="profileEmail">... @starfleet.com</p>
+                    <div class="p-3 rounded" style="background: rgba(0, 210, 255, 0.1); border: 1px solid rgba(0, 210, 255, 0.2);">
+                        <h3 class="mb-0 fw-bold" style="color: var(--cosmic-blue)" id="profilePoints">1,250</h3>
+                        <small class="text-uppercase opacity-75 fw-bold">Cosmic Points</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card p-4 h-100">
+                    <h3 class="fw-bold text-white mb-2">Warp Speed</h3>
+                    <p class="opacity-50 mb-4 small">Update your interface's atmosphere with discovered planet themes.</p>
+                    
+                    <div id="unlockedPlanetsContainer" class="row g-3">
+                        <div class="col-6 col-lg-4">
+                            <div class="card theme-card p-3 border-secondary text-center" style="cursor: pointer; background: rgba(255,255,255,0.05);">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2534/2534110.png" class="img-fluid mb-2 mx-auto" style="width: 50px;" alt="Earth">
+                                <h6 class="mb-0 fw-bold">Earth (Default)</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-3 text-center border-top border-secondary">
+        <p class="m-0 small opacity-50">&copy; 2026 Cosmic Explorers</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/getCurrentURL.js"></script>
+    <script src="js/userNavbarToggle.js"></script>
+</body>
+</html>

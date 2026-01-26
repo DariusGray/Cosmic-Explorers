@@ -1,0 +1,34 @@
+//////////////////////////////////////////////////////
+// REQUIRE MODULES
+//////////////////////////////////////////////////////
+require("dotenv").config();
+const mysql = require("mysql2");
+
+//////////////////////////////////////////////////////
+// CREATE CONNECTION WITHOUT DATABASE
+//////////////////////////////////////////////////////
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+});
+
+//////////////////////////////////////////////////////
+// DATABASE NAME
+//////////////////////////////////////////////////////
+const database = process.env.DB_DATABASE;
+
+//////////////////////////////////////////////////////
+// CREATE DATABASE
+//////////////////////////////////////////////////////
+const CREATE_DB_SQL = `CREATE DATABASE IF NOT EXISTS \`${database}\`;`;
+
+connection.query(CREATE_DB_SQL, (error) => {
+  if (error) {
+    console.error("Error creating database:", error);
+  } else {
+    console.log(`Database "${database}" ready`);
+  }
+
+  connection.end(() => process.exit());
+});

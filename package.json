@@ -4,7 +4,11 @@
   "description": "You are required to build your folder structures for your project.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run init_tables && jest --forceExit",
+    "init_tables": "node src/config/createSchema.js && node src/config/initTables.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test:server": "concurrently \"npm run dev\" \"npm run test -- playwright.test.js --json --outputFile='test_results.json'\" --kill-others --success first"
   },
   "repository": {
     "type": "git",
