@@ -1,3 +1,4 @@
+
 const model = require("../models/planetModel");
 
 module.exports.getAllPlanets = (req, res) => {
@@ -28,7 +29,10 @@ module.exports.checkUserExists = (req, res, next) => {
 };
 
 module.exports.unlockPlanets = (req, res, next) => {
-  const data = { points: res.locals.user.points };
+  const data = {
+    user_id: res.locals.user.user_id,
+    points: res.locals.user.points,
+  };
 
   model.selectEligiblePlanets(data, (error, results) => {
     if (error) return res.status(500).json(error);

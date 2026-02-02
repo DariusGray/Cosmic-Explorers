@@ -1,98 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic Explorers - Leaderboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cosmic Explorers - Leaderboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/cosmic.css" rel="stylesheet">
 </head>
-<body class="d-flex flex-column min-vh-100">
 
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <img src="https://cdn-icons-png.flaticon.com/512/3212/3212581.png" alt="Logo" width="30" height="30" class="me-2">
-                Cosmic Explorers
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="challenges.html">Challenges</a></li>
-                    <li class="nav-item"><a class="nav-link" href="planets.html">Planets</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="leaderboard.html">Leaderboard</a></li>
-                </ul>
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a id="profileButton" href="profile.html" class="nav-link d-none">Profile</a></li>
-                    <li class="nav-item"><a id="logoutButton" href="#" class="nav-link d-none">Logout</a></li>
-                    <li class="nav-item"><a id="loginButton" href="login.html" class="nav-link">Login</a></li>
-                    <li class="nav-item"><a id="registerButton" href="register.html" class="nav-link">Register</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<body class="d-flex flex-column min-vh-100" >
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="index.html">
+        <img src="images/cosmic-explorers-logo.png" alt="Logo" width="30" height="30" class="me-2">
+        Cosmic Explorers
+      </a>
 
-    <main class="flex-grow-1 container py-5">
-        <div class="text-center mb-5">
-            <h1 class="fw-bold text-white display-4">Galactic Rankings</h1>
-            <p class="opacity-75 lead">Hover over the top explorers to see their cosmic aura.</p>
-        </div>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="card p-0 overflow-hidden border-0 shadow-lg" style="background: rgba(255, 255, 255, 0.03);">
-                    <div class="table-responsive">
-                        <table class="table table-dark align-middle mb-0 text-center">
-                            <thead class="text-uppercase small opacity-50" style="background: rgba(255,255,255,0.05)">
-                                <tr>
-                                    <th class="py-3">Rank</th>
-                                    <th class="py-3">Explorer</th>
-                                    <th class="py-3">Missions Won</th>
-                                    <th class="py-3">Points Gained</th>
-                                </tr>
-                            </thead>
-                            <tbody id="leaderboardBody">
-                                <tr class="rank-1">
-                                    <td class="py-4 fs-5">🥇 1</td>
-                                    <td class="fw-bold">Captain_Nova</td>
-                                    <td>24</td>
-                                    <td>2400</td>
-                                </tr>
-                                <tr class="rank-2">
-                                    <td class="py-4 fs-5">🥈 2</td>
-                                    <td class="fw-bold">Star_Walker</td>
-                                    <td>18</td>
-                                    <td>1900</td>
-                                </tr>
-                                <tr class="rank-3">
-                                    <td class="py-4 fs-5">🥉 3</td>
-                                    <td class="fw-bold">Solar_Flare</td>
-                                    <td>15</td>
-                                    <td>1500</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 opacity-50">4</td>
-                                    <td>Luna_Orbit</td>
-                                    <td>10</td>
-                                    <td>1000</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="challenges.html">Challenges</a></li>
+          <li class="nav-item"><a class="nav-link" href="planets.html">Planets</a></li>
+          <li class="nav-item"><a class="nav-link active" href="leaderboard.html">Leaderboard</a></li>
+        </ul>
 
-    <footer class="py-4 text-center border-top border-secondary mt-5">
-        <p class="m-0 small opacity-50">&copy; 2026 Cosmic Explorers</p>
-    </footer>
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item me-lg-2">
+            <span id="navGreeting" class="nav-link small opacity-75 d-none">
+              Welcome, <span id="navUsername" class="fw-bold">Explorer</span>
+            </span>
+          </li>
+          <li class="nav-item"><a id="profileButton" href="profile.html" class="nav-link d-none">Profile</a></li>
+          <li class="nav-item"><a id="logoutButton" href="#" class="nav-link d-none">Logout</a></li>
+          <li class="nav-item"><a id="loginButton" href="login.html" class="nav-link">Login</a></li>
+          <li class="nav-item"><a id="registerButton" href="register.html" class="nav-link">Register</a></li>
+        </ul>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/getCurrentURL.js"></script>
-    <script src="js/userNavbarToggle.js"></script>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-grow-1 container py-5">
+    <div class="text-center mb-5">
+      <h1 class="display-5 fw-bold text-white">Hall of Champions</h1>
+      <p class="lead opacity-75">The top Explorers in the galaxy.</p>
+    </div>
+
+    <div class="card p-4">
+      <div class="table-responsive">
+        <table class="table table-dark table-borderless align-middle mb-0">
+          <thead>
+            <tr>
+              <th class="py-3">Rank</th>
+              <th class="py-3">Explorer</th>
+              <th class="py-3">Missions Won</th>
+              <th class="py-3">Points Gained</th>
+            </tr>
+          </thead>
+
+          <tbody id="leaderboardBody">
+            <tr>
+              <td colspan="4" class="py-4 text-center opacity-75">
+                Rankings will appear here once missions are completed.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <template id="leaderboardRowTemplate">
+      <tr>
+        <td class="py-3 rankCell">#</td>
+        <td class="fw-bold nameCell">
+          <span class="nameBadge">
+            <span class="nameText">Explorer</span>
+          </span>
+        </td>
+        <td class="missionsCell">—</td>
+        <td class="pointsCell">0</td>
+      </tr>
+    </template>
+
+    </div>
+  </main>
+
+  <footer class="py-4 text-center border-top border-secondary mt-5">
+    <p class="m-0 small opacity-50">&copy; 2026 Cosmic Explorers</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/getCurrentURL.js"></script>
+  <script src="js/queryCmds.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/userNavbarToggle.js"></script>
+  <script src="js/leaderboard.js"></script>
+  <script src="js/theme.js"></script>
+
 </body>
 </html>

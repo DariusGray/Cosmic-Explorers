@@ -1,101 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic Explorers - Challenges</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cosmic Explorers - Challenges</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/cosmic.css" rel="stylesheet">
 </head>
-<body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <img src="https://cdn-icons-png.flaticon.com/512/3212/3212581.png" alt="Logo" width="30" height="30" class="me-2">
-                Cosmic Explorers
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="challenges.html">Challenges</a></li>
-                    <li class="nav-item"><a class="nav-link" href="planets.html">Planets</a></li>
-                    <li class="nav-item"><a class="nav-link" href="leaderboard.html">Leaderboard</a></li>
-                </ul>
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a id="profileButton" href="profile.html" class="nav-link d-none">Profile</a></li>
-                    <li class="nav-item"><a id="logoutButton" href="#" class="nav-link d-none">Logout</a></li>
-                    <li class="nav-item"><a id="loginButton" href="login.html" class="nav-link">Login</a></li>
-                    <li class="nav-item"><a id="registerButton" href="register.html" class="nav-link">Register</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
 
-    <main class="flex-grow-1 container py-5">
-        <div class="d-flex justify-content-between align-items-center mb-5">
-            <h1 class="fw-bold text-white">Available Missions</h1>
-            <button class="btn btn-primary px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#addChallengeModal">+ Create New Mission</button>
-        </div>
+<body class="d-flex flex-column min-vh-100" data-page="challenges">
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="index.html">
+        <img src="images/cosmic-explorers-logo.png" alt="Logo" width="30" height="30" class="me-2">
+        Cosmic Explorers
+      </a>
 
-        <div id="completionAlert" class="alert alert-info d-none shadow-lg border-0 bg-dark text-info" role="alert" style="backdrop-filter: blur(10px);">
-            <div class="d-flex align-items-center">
-                <span class="fs-4 me-3">🚀</span>
-                <div>
-                    <h5 class="alert-heading mb-0 fw-bold">Mission Accomplished!</h5>
-                    <p class="mb-0 small opacity-75">Your cosmic points have been updated in your profile.</p>
-                </div>
-            </div>
-        </div>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-        <div id="challengesContainer" class="row g-4">
-            <div class="col-md-4">
-                <div class="card h-100 text-center">
-                    <div class="card-body">
-                        <div class="display-5 mb-3">🏃‍♂️</div>
-                        <h4 class="card-title fw-bold">Interstellar Sprint</h4>
-                        <p class="opacity-75 small">Run 3km to maintain your pilot fitness.</p>
-                        <hr class="border-secondary opacity-25">
-                        <p class="fw-bold mb-3" style="color: var(--cosmic-blue);">Reward: 100 Pts</p>
-                        <button class="btn btn-outline-info w-100 py-2">Complete Challenge</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="challenges.html">Challenges</a></li>
+          <li class="nav-item"><a class="nav-link" href="planets.html">Planets</a></li>
+          <li class="nav-item"><a class="nav-link" href="leaderboard.html">Leaderboard</a></li>
+        </ul>
 
-    <div class="modal fade" id="addChallengeModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content card p-0 shadow-lg">
-                <div class="modal-header border-secondary">
-                    <h5 class="modal-title fw-bold">Draft New Mission</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <form id="challengeForm">
-                        <div class="mb-3">
-                            <label class="form-label small opacity-75">Mission Task</label>
-                            <input type="text" class="form-control bg-dark text-white border-secondary" id="taskInput" placeholder="e.g., Meditate for 10 mins" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small opacity-75">Point Reward</label>
-                            <input type="number" class="form-control bg-dark text-white border-secondary" id="pointsInput" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Broadcast to Galaxy</button>
-                    </form>
-                </div>
-            </div>
-        </div>
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item me-lg-2">
+            <span id="navGreeting" class="nav-link small opacity-75 d-none">
+              Welcome, <span id="navUsername" class="fw-bold">Explorer</span>
+            </span>
+          </li>
+          <li class="nav-item"><a id="profileButton" href="profile.html" class="nav-link d-none">Profile</a></li>
+          <li class="nav-item"><a id="logoutButton" href="#" class="nav-link d-none">Logout</a></li>
+          <li class="nav-item"><a id="loginButton" href="login.html" class="nav-link">Login</a></li>
+          <li class="nav-item"><a id="registerButton" href="register.html" class="nav-link">Register</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-3">
+    <div id="pointsBarNav" class="planet-chip theme-hint d-none">
+      Current points: <span id="currentPointsNav" class="fw-bold ms-1">0</span>
+    </div>
+  </div>
+
+  <main class="flex-grow-1 container py-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5">
+      <div>
+        <h1 class="fw-bold text-white mb-1">Available Missions</h1>
+        <p class="opacity-75 mb-0 small">Complete missions to earn points and unlock planets.</p>
+      </div>
+
+      <button id="openCreateChallengeBtn"
+              class="btn btn-primary px-4 shadow-sm"
+              data-bs-toggle="modal"
+              data-bs-target="#addChallengeModal">
+        + Create New Mission
+      </button>
     </div>
 
-    <footer class="py-3 text-center border-top border-secondary">
-        <p class="m-0 small opacity-50">&copy; 2026 Cosmic Explorers</p>
-    </footer>
+    <div id="pageAlert" class="alert alert-warning d-none" role="alert"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/getCurrentURL.js"></script>
-    <script src="js/userNavbarToggle.js"></script>
+    <div id="completionAlert" class="alert alert-info d-none shadow-sm cosmic-glass text-info" role="alert">
+      <div class="d-flex align-items-center">
+        <span class="fs-4 me-3">🚀</span>
+        <div>
+          <h5 class="alert-heading mb-0 fw-bold">Mission Accomplished!</h5>
+          <p class="mb-0 small opacity-75">Points updated.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="challengesLoading" class="cosmic-empty-state">
+      <div class="opacity-75">Preparing missions…</div>
+      <div class="small opacity-50 mt-1">Just a moment</div>
+    </div>
+
+    <div id="challengesEmpty" class="cosmic-empty-state d-none">
+      <div class="fs-2">🛰️</div>
+      <div class="mt-2 fw-bold">No missions yet</div>
+      <div class="small opacity-50">Create a mission to begin your journey.</div>
+    </div>
+
+    <div id="challengesContainer" class="row g-4 d-none"></div>
+
+    <template id="challengeCardTemplate">
+      <div class="col-md-4">
+        <div class="card h-100 text-center challenge-card">
+          <div class="card-body">
+            <div class="display-5 mb-3 challenge-icon" aria-hidden="true">🛰️</div>
+
+            <h4 class="card-title fw-bold mb-2">Mission</h4>
+
+            <p class="opacity-75 small challenge-description mb-3"></p>
+
+            <hr class="border-secondary opacity-25">
+
+            <p class="fw-bold mb-3 challenge-points" style="color: var(--cosmic-blue);">Reward: -- Pts</p>
+
+            <div class="small mb-2 opacity-75 challenge-status"></div>
+
+            <button class="btn btn-outline-info w-100 py-2 complete-btn"
+                    type="button"
+                    data-challenge-id="">
+              Complete Mission
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+  </main>
+
+  <div class="modal fade" id="addChallengeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content card p-0 shadow-lg">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title fw-bold">Draft New Mission</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <div id="createChallengeAlert" class="alert alert-danger d-none" role="alert"></div>
+
+          <form id="challengeForm" autocomplete="off">
+            <div class="mb-3">
+              <label for="taskInput" class="form-label small opacity-75">Mission Task</label>
+              <input type="text"
+                     class="form-control bg-dark text-white border-secondary"
+                     id="taskInput"
+                     placeholder="e.g., Take a 15-minute walk outdoors"
+                     required>
+            </div>
+
+            <div class="mb-3">
+              <label for="pointsInput" class="form-label small opacity-75">Point Reward</label>
+              <input type="number"
+                     class="form-control bg-dark text-white border-secondary"
+                     id="pointsInput"
+                     min="1"
+                     step="1"
+                     placeholder="e.g., 10"
+                     required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Launch Mission</button>
+            <p class="small opacity-50 mt-3 mb-0">
+              Your mission will be added to the galaxy.
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="completeMissionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content card p-0 shadow-lg">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title fw-bold">Mission Debrief</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <div id="completeMissionAlert" class="alert alert-danger d-none" role="alert"></div>
+
+          <form id="completeMissionForm" autocomplete="off">
+            <div class="mb-3">
+              <label for="completeMissionComment" class="form-label small opacity-75">
+                Add a completion note (optional)
+              </label>
+              <textarea
+                class="form-control bg-dark text-white border-secondary"
+                id="completeMissionComment"
+                rows="3"
+                placeholder="e.g., Ran 3km today, felt great!"
+              ></textarea>
+            </div>
+
+            <button type="submit" id="confirmCompleteBtn" class="btn btn-primary w-100 py-2 fw-bold">
+              Submit & Complete
+            </button>
+
+            <p class="small opacity-50 mt-3 mb-0">
+              Your note will be saved with the mission completion.
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="py-3 text-center border-top border-secondary">
+    <p class="m-0 small opacity-50">&copy; 2026 Cosmic Explorers</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/getCurrentURL.js"></script>
+  <script src="js/queryCmds.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/userNavbarToggle.js"></script>
+  <script src="js/challenges.js"></script>
+  <script src="js/theme.js"></script>
 </body>
 </html>

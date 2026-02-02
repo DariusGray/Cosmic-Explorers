@@ -50,10 +50,19 @@ module.exports.registerUser = (req, res, next) => {
     }
 
     res.locals.userId = results.insertId;
+    res.locals.user = {
+      user_id: results.insertId,
+      username: req.body.username,
+      email: req.body.email,
+      points: 0,
+      latest_discovered_planet: null,
+    };
+
     res.locals.message = `User ${req.body.username} registered successfully.`;
     next();
   });
 };
+
 
 //////////////////////////////////////////////////////
 // VALIDATE LOGIN BODY

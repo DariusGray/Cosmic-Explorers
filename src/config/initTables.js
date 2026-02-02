@@ -89,7 +89,7 @@ INSERT INTO UserCompletion (challenge_id, user_id, details) VALUES
 
 -- Seed planets
 INSERT INTO Planet (name, unlock_points) VALUES
-('Mercury Outpost – First Launch', 30),
+('Mercury Outpost – First Launch', 0),
 ('Asteroid Relay – Resource Checkpoint', 90),
 ('Neptune Observatory – Outer System Watchpost', 250),
 ('Jupiter Station – Deep Space Command', 500);
