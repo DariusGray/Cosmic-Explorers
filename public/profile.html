@@ -65,7 +65,7 @@
           <div class="mt-4">
             <div class="planet-chip mx-auto">
               <span class="opacity-75">Latest Discovery:</span>
-              <span class="fw-bold" id="latestPlanetLabel">—</span>
+              <span class="fw-bold" id="latestDiscoveryLabel">—</span>
             </div>
           </div>
         </div>
@@ -73,27 +73,28 @@
 
       <div class="col-md-8">
         <div class="card p-4 h-100">
-          <h3 class="fw-bold text-white mb-2">Warp Speed</h3>
-          <p class="opacity-50 mb-4 small">Update your interface's atmosphere with discovered planet themes.</p>
+          <h3 class="fw-bold text-white mb-2">Achievements</h3>
+          <p class="opacity-50 mb-4 small">Unlocked planets are shown here as your exploration milestones.</p>
 
-          <div id="unlockedPlanetsContainer" class="row g-3">
+          <div id="achievementGrid" class="row g-3">
             <div class="col-12">
               <div class="theme-hint p-4 text-center">
-                <div class="opacity-75">Your themes will appear here.</div>
-                <div class="small opacity-50">Unlock planets to gain new visual themes.</div>
+                <div class="opacity-75">Your achievements will appear here.</div>
+                <div class="small opacity-50">Complete missions to unlock planets.</div>
               </div>
             </div>
           </div>
 
-          <template id="themeCardTemplate">
+          <template id="achievementCardTemplate">
             <div class="col-6 col-lg-4">
-              <div class="card planet-card p-3 text-center h-100">
+              <div class="card planet-card achievement-card p-3 text-center h-100">
                 <div class="planet-icon mx-auto mb-2 glow-accent">🪐</div>
-                <h6 class="mb-0 fw-bold themeName">Planet Theme</h6>
-                <div class="small opacity-75 mt-1">Tap to apply</div>
+                <h6 class="mb-0 fw-bold planet-name">Planet</h6>
+                <div class="small opacity-75 mt-1 planet-requirement">Unlocked at 0 pts</div>
               </div>
             </div>
           </template>
+
         </div>
       </div>
     </div>

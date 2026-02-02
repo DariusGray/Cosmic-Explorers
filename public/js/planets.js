@@ -163,7 +163,7 @@ function renderPlanets({ allPlanets, unlockedPlanets }) {
 // ---------------------------
 function apiGetAllPlanets() {
   return new Promise((resolve, reject) => {
-    fetchMethod("/api/planets", (status, data) => {
+    fetchMethod(currentUrl + "/api/planets", (status, data) => {
       if (status === 200) resolve(data);
       else reject({ status, data });
     });
@@ -172,7 +172,7 @@ function apiGetAllPlanets() {
 
 function apiGetUnlockedPlanets(userId, token) {
   return new Promise((resolve, reject) => {
-    fetchMethod(`/api/users/${userId}/planets`, (status, data) => {
+    fetchMethod(currentUrl + `/api/users/${userId}/planets`, (status, data) => {
       if (status === 200) resolve(data);
       else reject({ status, data });
     }, "GET", null, token);
@@ -181,7 +181,7 @@ function apiGetUnlockedPlanets(userId, token) {
 
 function apiUnlockPlanets(userId, token) {
   return new Promise((resolve, reject) => {
-    fetchMethod(`/api/users/${userId}/planets/unlock`, (status, data) => {
+    fetchMethod(currentUrl + `/api/users/${userId}/planets/unlock`, (status, data) => {
       if (status === 200) resolve(data);
       else reject({ status, data });
     }, "POST", {}, token);
@@ -192,25 +192,50 @@ function apiUnlockPlanets(userId, token) {
 // Page init
 // ---------------------------
 async function initPlanetsPage() {
-  // Require login
   const user = window.CE_AUTH.requireUser();
   const token = window.CE_AUTH.getToken();
 
-  try {
-    const [allPlanets, unlockedPlanets] = await Promise.all([
-      apiGetAllPlanets(),
-      apiGetUnlockedPlanets(user.user_id, token),
-    ]);
-
-    renderPlanets({ allPlanets, unlockedPlanets });
-  } catch (err) {
-    console.error("Planets init error:", err);
-    const unlockedGrid = document.getElementById("unlockedPlanetsGrid");
-    const lockedGrid = document.getElementById("lockedPlanetsGrid");
-    showHint(unlockedGrid, "Failed to load planets.", err?.data?.message || "Try again.");
-    showHint(lockedGrid, "Failed to load planets.", err?.data?.message || "Try again.");
+  const userId = user.user_id ?? user.id ?? user.userId;
+  if (!userId || !token) {
+    console.warn("Missing userId/token. Please login again.");
+    return;
   }
+
+  const unlockedGrid = document.getElementById("unlockedPlanetsGrid");
+  const lockedGrid = document.getElementById("lockedPlanetsGrid");
+
+  let allPlanets = [];
+  try {
+    const allPlanetsRes = await apiGetAllPlanets();
+    allPlanets = Array.isArray(allPlanetsRes)
+      ? allPlanetsRes
+      : (allPlanetsRes.planets || allPlanetsRes.data || []);
+  } catch (err) {
+    console.error("GET /api/planets failed:", err);
+    showHint(unlockedGrid, "Failed to load planets.", err?.data?.message || `Status ${err?.status || "?"}`);
+    showHint(lockedGrid, "Failed to load planets.", err?.data?.message || `Status ${err?.status || "?"}`);
+    return; 
+  }
+
+  let unlockedPlanets = [];
+  try {
+    const unlockedRes = await apiGetUnlockedPlanets(userId, token);
+    unlockedPlanets = Array.isArray(unlockedRes)
+      ? unlockedRes
+      : (unlockedRes.planets || unlockedRes.data || []);
+  } catch (err) {
+    console.error("GET /api/users/:id/planets failed:", err);
+    showHint(unlockedGrid, "Couldn’t load your unlocked planets.", err?.data?.message || `Status ${err?.status || "?"}`);
+  }
+
+  renderPlanets({ allPlanets, unlockedPlanets });
+  if (!unlockedPlanets.length) {
+  window.CE_THEME.saveTheme("mercury-outpost");
+  window.CE_THEME.applyTheme("mercury-outpost");
 }
+}
+
+
 
 // ---------------------------
 // Unlock button handler
@@ -222,13 +247,16 @@ async function handleUnlockClick() {
   setUnlockButtonLoading(true);
 
   try {
-    const unlockRes = await apiUnlockPlanets(user.user_id, token);
+    const userId = user.user_id ?? user.id ?? user.userId;
+    const unlockRes = await apiUnlockPlanets(userId, token);
+
 
     // Re-fetch unlocked planets to refresh UI accurately
     const [allPlanets, unlockedPlanets] = await Promise.all([
       apiGetAllPlanets(),
-      apiGetUnlockedPlanets(user.user_id, token),
+      apiGetUnlockedPlanets(userId, token),
     ]);
+
 
     renderPlanets({ allPlanets, unlockedPlanets });
 

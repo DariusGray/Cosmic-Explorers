@@ -1,6 +1,3 @@
-// public/js/leaderboard.js
-// Requires: queryCmds.js, auth.js
-
 document.addEventListener("DOMContentLoaded", () => {
   const body = document.getElementById("leaderboardBody");
   const template = document.getElementById("leaderboardRowTemplate");
@@ -8,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderEmpty(msg) {
     body.innerHTML = `
       <tr>
-        <td colspan="4" class="py-4 text-center opacity-75">${msg}</td>
+        <td colspan="3" class="py-4 text-center opacity-75">${msg}</td>
       </tr>
     `;
   }
@@ -21,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function loadLeaderboard() {
-    fetchMethod("/api/leaderboard", (status, data) => {
+    fetchMethod(currentUrl + "/api/leaderboard", (status, data) => {
       if (status !== 200) {
         renderEmpty(data.message || "Couldn’t load leaderboard.");
         return;
@@ -36,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
       body.innerHTML = "";
 
       const currentUser = CE_AUTH.getUser();
-      const currentUserId = currentUser?.user_id;
+      const currentUserId = currentUser?.user_id ?? currentUser?.id ?? currentUser?.userId;
 
       list.forEach((u, idx) => {
         const rank = idx + 1;
@@ -45,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const tr = node.querySelector("tr");
         const rankCell = node.querySelector(".rankCell");
         const nameText = node.querySelector(".nameText");
-        const missionsCell = node.querySelector(".missionsCell");
         const pointsCell = node.querySelector(".pointsCell");
 
         applyRankClass(tr, rank);
@@ -55,17 +51,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (rankCell) rankCell.textContent = `#${rank}`;
         if (nameText) nameText.textContent = username;
-        if (missionsCell) missionsCell.textContent = "—";
         if (pointsCell) pointsCell.textContent = points;
+
         if (currentUserId && Number(u.user_id) === Number(currentUserId)) {
           tr.style.outline = "2px solid var(--theme-accent)";
           tr.style.outlineOffset = "-2px";
-          if (rank <= 3 && nameText) {
-            nameText.insertAdjacentHTML(
-              "afterend",
-              ` <span class="badge bg-warning text-dark ms-2">Golden Access</span>`
-            );
-          }
         }
 
         body.appendChild(node);

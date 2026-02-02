@@ -17,7 +17,7 @@ module.exports.createNewChallenge = (req, res, next) => {
   model.insertSingle(data, (error, results) => {
     if (error) {
       console.error("Error createNewChallenge:", error);
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Server error" });
     }
 
     res.locals.challenge_id = results.insertId;
@@ -31,7 +31,7 @@ module.exports.readChallengeByIdAfterCreate = (req, res) => {
   model.selectById(data, (error, results) => {
     if (error) {
       console.error("Error readChallengeByIdAfterCreate:", error);
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Server error" });
     }
 
     if (results.length === 0) {
@@ -55,7 +55,7 @@ module.exports.readAllChallenges = (req, res) => {
   model.selectAll((error, results) => {
     if (error) {
       console.error("Error readAllChallenges:", error);
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Server error" });
     }
     return res.status(200).json(results);
   });
@@ -70,7 +70,7 @@ module.exports.checkChallengeExists = (req, res, next) => {
   model.selectById(data, (error, results) => {
     if (error) {
       console.error("Error checkChallengeExists:", error);
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Server error" });
     }
 
     if (results.length === 0) {
@@ -85,8 +85,16 @@ module.exports.checkChallengeExists = (req, res, next) => {
 //////////////////////////////////////////////////////
 // PUT /challenges/:challenge_id owner check
 //////////////////////////////////////////////////////
+// PUT /challenges/:challenge_id owner check
 module.exports.checkChallengeExistsAndOwner = (req, res, next) => {
-  if (req.body.user_id === undefined || req.body.question === undefined || req.body.points === undefined) {
+  const incomingDescription =
+    req.body.description !== undefined ? req.body.description : req.body.question;
+
+  if (
+    req.body.user_id === undefined ||
+    incomingDescription === undefined ||
+    req.body.points === undefined
+  ) {
     return res.status(400).json({ message: "Please fill in all the fields" });
   }
 
@@ -95,7 +103,7 @@ module.exports.checkChallengeExistsAndOwner = (req, res, next) => {
   model.selectById(data, (error, results) => {
     if (error) {
       console.error("Error checkChallengeExistsAndOwner:", error);
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Server error" });
     }
 
     if (results.length === 0) {
@@ -110,12 +118,14 @@ module.exports.checkChallengeExistsAndOwner = (req, res, next) => {
 
     res.locals.challenge_id = parseInt(req.params.challenge_id);
     res.locals.creator_id = challenge.creator_id;
-    res.locals.description = req.body.question;
+
+    res.locals.description = incomingDescription;
     res.locals.points = req.body.points;
 
     next();
   });
 };
+
 
 module.exports.updateChallengeById = (req, res) => {
   const data = {
@@ -127,7 +137,7 @@ module.exports.updateChallengeById = (req, res) => {
   model.updateById(data, (error, results) => {
     if (error) {
       console.error("Error updateChallengeById:", error);
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Server error" });
     }
 
     if (results.affectedRows === 0) {
@@ -152,7 +162,7 @@ module.exports.deleteChallengeCompletions = (req, res, next) => {
   model.deleteCompletionsByChallengeId(data, (error) => {
     if (error) {
       console.error("Error deleteChallengeCompletions:", error);
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Server error" });
     }
     next();
   });
@@ -164,7 +174,7 @@ module.exports.deleteChallengeById = (req, res) => {
   model.deleteById(data, (error, results) => {
     if (error) {
       console.error("Error deleteChallengeById:", error);
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Server error" });
     }
 
     if (results.affectedRows === 0) {
@@ -188,7 +198,7 @@ module.exports.checkChallengeExistsAndOwnerForDelete = (req, res, next) => {
   model.selectById(data, (error, results) => {
     if (error) {
       console.error("Error checkChallengeExistsAndOwnerForDelete:", error);
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Server error" });
     }
 
     if (results.length === 0) {
@@ -215,7 +225,7 @@ module.exports.readUsersByChallengeId = (req, res) => {
   model.selectUsersByChallengeId(data, (error, results) => {
     if (error) {
       console.error("Error readUsersByChallengeId:", error);
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Server error" });
     }
 
     if (results.length === 0) {
@@ -242,7 +252,7 @@ module.exports.checkUserExists = (req, res, next) => {
   model.selectUserById(data, (error, results) => {
     if (error) {
       console.error("Error checkUserExists:", error);
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Server error" });
     }
 
     if (results.length === 0) {
@@ -263,7 +273,7 @@ module.exports.createCompletion = (req, res, next) => {
   model.insertCompletion(data, (error, results) => {
     if (error) {
       console.error("Error createCompletion:", error);
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Server error" });
     }
 
     res.locals.completion_id = results.insertId;
@@ -283,7 +293,7 @@ module.exports.rewardPointsToUser = (req, res, next) => {
   model.addPointsToUser(data, (error) => {
     if (error) {
       console.error("Error rewardPointsToUser:", error);
-      return res.status(500).json(error);
+      return res.status(500).json({ message: "Internal Server error" });
     }
     next();
   });

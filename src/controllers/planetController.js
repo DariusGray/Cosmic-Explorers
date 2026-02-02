@@ -3,7 +3,7 @@ const model = require("../models/planetModel");
 
 module.exports.getAllPlanets = (req, res) => {
   model.selectAllPlanets({}, (error, results) => {
-    if (error) return res.status(500).json(error);
+    if (error) return res.status(500).json({ message: "Internal Server error" });
     return res.status(200).json(results);
   });
 };
@@ -12,7 +12,7 @@ module.exports.checkUserExists = (req, res, next) => {
   const data = { user_id: req.params.user_id };
 
   model.selectUserById(data, (error, results) => {
-    if (error) return res.status(500).json(error);
+    if (error) return res.status(500).json({ message: "Internal Server error" });
 
     if (results.length === 0) {
       return res.status(404).json({ message: "User not found" });
@@ -35,7 +35,7 @@ module.exports.unlockPlanets = (req, res, next) => {
   };
 
   model.selectEligiblePlanets(data, (error, results) => {
-    if (error) return res.status(500).json(error);
+    if (error) return res.status(500).json({ message: "Internal Server error" });
 
     let unlocked = [];
     let remaining = results.length;
@@ -92,7 +92,7 @@ module.exports.updateLatestDiscoveredPlanet = (req, res, next) => {
   };
 
   model.updateUserLatestPlanet(data, (error) => {
-    if (error) return res.status(500).json(error);
+    if (error) return res.status(500).json({ message: "Internal Server error" });
 
     res.locals.user.latest_discovered_planet = latest.name;
     next();
@@ -112,7 +112,7 @@ module.exports.getPlanetsByUser = (req, res) => {
   const data = { user_id: req.params.user_id };
 
   model.selectUserPlanets(data, (error, results) => {
-    if (error) return res.status(500).json(error);
+    if (error) return res.status(500).json({ message: "Internal Server error" });
     return res.status(200).json(results);
   });
 };

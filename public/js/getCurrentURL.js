@@ -1,2 +1,1 @@
-
-window.currentUrl = "http://localhost:3000";
+window.currentUrl = window.location.origin;

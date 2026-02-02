@@ -21,9 +21,9 @@ module.exports.comparePassword = (req, res, next) => {
 
   bcrypt.compare(plain, hash, (err, isMatch) => {
     if (err) {
-      console.error("Error bcrypt:", err);
-      return res.status(500).json(err);
-    }
+  console.error("Error bcrypt:", err);
+  return res.status(500).json({ message: "Server error" });
+}
 
     if (!isMatch) {
       return res.status(401).json({ message: "Wrong password" });
@@ -39,9 +39,9 @@ module.exports.comparePassword = (req, res, next) => {
 module.exports.hashPassword = (req, res, next) => {
   const callback = (err, hash) => {
     if (err) {
-      console.error("Error bcrypt:", err);
-      res.status(500).json(err);
-    } else {
+  console.error("Error bcrypt:", err);
+  return res.status(500).json({ message: "Server error" });
+  } else {
       res.locals.hash = hash;
       next();
     }
