@@ -6,22 +6,22 @@ const jwtMiddleware = require("../middlewares/jwtMiddleware");
 const authMiddleware = require("../middlewares/authMiddleware");
 
 //////////////////////////////////////////////////////
-// POST /challenges (protected)
+// POST /challenges
 //////////////////////////////////////////////////////
 router.post("/", [
   jwtMiddleware.verifyToken,
-  authMiddleware.requireSameUserBody, // body.user_id must match token userId
+  authMiddleware.requireSameUserBody,
   controller.createNewChallenge,
   controller.readChallengeByIdAfterCreate,
 ]);
 
 //////////////////////////////////////////////////////
-// GET /challenges (public)
+// GET /challenges
 //////////////////////////////////////////////////////
 router.get("/", controller.readAllChallenges);
 
 //////////////////////////////////////////////////////
-// PUT /challenges/:challenge_id (protected)
+// PUT /challenges/:challenge_id
 //////////////////////////////////////////////////////
 router.put("/:challenge_id", [
   jwtMiddleware.verifyToken,
@@ -31,19 +31,18 @@ router.put("/:challenge_id", [
 ]);
 
 //////////////////////////////////////////////////////
-// DELETE /challenges/:challenge_id (protected)
+// DELETE /challenges/:challenge_id
 //////////////////////////////////////////////////////
-router.delete(
-  "/:challenge_id",
+router.delete("/:challenge_id", [
   jwtMiddleware.verifyToken,
   authMiddleware.requireSameUserBody,
   controller.checkChallengeExistsAndOwnerForDelete,
   controller.deleteChallengeCompletions,
-  controller.deleteChallengeById
-);
+  controller.deleteChallengeById,
+]);
 
 //////////////////////////////////////////////////////
-// POST /challenges/:challenge_id completion (protected)
+// POST /challenges/:challenge_id
 //////////////////////////////////////////////////////
 router.post("/:challenge_id", [
   jwtMiddleware.verifyToken,
@@ -57,7 +56,7 @@ router.post("/:challenge_id", [
 ]);
 
 //////////////////////////////////////////////////////
-// GET /challenges/:challenge_id (public)
+// GET /challenges/:challenge_id
 //////////////////////////////////////////////////////
 router.get("/:challenge_id", controller.readUsersByChallengeId);
 

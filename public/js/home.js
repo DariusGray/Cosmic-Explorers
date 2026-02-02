@@ -47,12 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Build API base (consistent with your other pages)
-  const base = window.currentUrl ? `${window.currentUrl}/api` : "/api";
-  const url = `${base}/users/${userId}`;
-
   // Fetch latest points from server (source of truth)
-  fetchMethod(url, (status, data) => {
+  fetchMethod(`/api/users/${userId}`, (status, data) => {
     if (status !== 200) {
       console.warn("Home points fetch failed:", status, data);
       showAlert(data?.message || "Could not load your points. Is the backend running?");

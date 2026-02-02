@@ -4,34 +4,40 @@ const model = require("../models/challengeModel");
 // POST /challenges
 //////////////////////////////////////////////////////
 module.exports.createNewChallenge = (req, res, next) => {
-  if (req.body.description === undefined || req.body.user_id === undefined || req.body.points === undefined) {
-    return res.status(400).json({ message: "Error: Please fill in all the fields" });
+  const description = req.body.description;
+  const user_id = req.body.user_id;
+  const points = req.body.points;
+
+  if (!description || user_id === undefined || points === undefined) {
+    return res.status(400).json({ message: "Please fill in all the fields" });
   }
 
   const data = {
-    description: req.body.description,
-    user_id: req.body.user_id,
-    points: req.body.points,
+    description: description,
+    user_id: user_id,
+    points: points,
   };
 
-  model.insertSingle(data, (error, results) => {
+  const callback = (error, results) => {
     if (error) {
       console.error("Error createNewChallenge:", error);
-      return res.status(500).json({ message: "Internal Server error" });
+      return res.status(500).json({ message: "Server error" });
     }
 
     res.locals.challenge_id = results.insertId;
     next();
-  });
+  };
+
+  model.insertSingle(data, callback);
 };
 
 module.exports.readChallengeByIdAfterCreate = (req, res) => {
   const data = { id: res.locals.challenge_id };
 
-  model.selectById(data, (error, results) => {
+  const callback = (error, results) => {
     if (error) {
       console.error("Error readChallengeByIdAfterCreate:", error);
-      return res.status(500).json({ message: "Internal Server error" });
+      return res.status(500).json({ message: "Server error" });
     }
 
     if (results.length === 0) {
@@ -39,38 +45,42 @@ module.exports.readChallengeByIdAfterCreate = (req, res) => {
     }
 
     const row = results[0];
-    return res.status(201).json({
+    res.status(201).json({
       challenge_id: row.challenge_id,
       challenge: row.description,
       creator_id: row.creator_id,
       points: row.points,
     });
-  });
+  };
+
+  model.selectById(data, callback);
 };
 
 //////////////////////////////////////////////////////
 // GET /challenges
 //////////////////////////////////////////////////////
 module.exports.readAllChallenges = (req, res) => {
-  model.selectAll((error, results) => {
+  const callback = (error, results) => {
     if (error) {
       console.error("Error readAllChallenges:", error);
-      return res.status(500).json({ message: "Internal Server error" });
+      return res.status(500).json({ message: "Server error" });
     }
-    return res.status(200).json(results);
-  });
+    res.status(200).json(results);
+  };
+
+  model.selectAll(callback);
 };
 
 //////////////////////////////////////////////////////
-// Middleware: challenge exists
+// CHECK CHALLENGE EXISTS
 //////////////////////////////////////////////////////
 module.exports.checkChallengeExists = (req, res, next) => {
   const data = { id: req.params.challenge_id };
 
-  model.selectById(data, (error, results) => {
+  const callback = (error, results) => {
     if (error) {
       console.error("Error checkChallengeExists:", error);
-      return res.status(500).json({ message: "Internal Server error" });
+      return res.status(500).json({ message: "Server error" });
     }
 
     if (results.length === 0) {
@@ -79,28 +89,26 @@ module.exports.checkChallengeExists = (req, res, next) => {
 
     res.locals.challenge = results[0];
     next();
-  });
+  };
+
+  model.selectById(data, callback);
 };
 
 //////////////////////////////////////////////////////
-// PUT /challenges/:challenge_id owner check
+// PUT /challenges/:challenge_id
 //////////////////////////////////////////////////////
-// PUT /challenges/:challenge_id owner check
 module.exports.checkChallengeExistsAndOwner = (req, res, next) => {
-  const incomingDescription =
-    req.body.description !== undefined ? req.body.description : req.body.question;
+  const user_id = req.body.user_id;
+  const description = req.body.description;
+  const points = req.body.points;
 
-  if (
-    req.body.user_id === undefined ||
-    incomingDescription === undefined ||
-    req.body.points === undefined
-  ) {
+  if (user_id === undefined || !description || points === undefined) {
     return res.status(400).json({ message: "Please fill in all the fields" });
   }
 
   const data = { id: req.params.challenge_id };
 
-  model.selectById(data, (error, results) => {
+  const callback = (error, results) => {
     if (error) {
       console.error("Error checkChallengeExistsAndOwner:", error);
       return res.status(500).json({ message: "Server error" });
@@ -112,20 +120,20 @@ module.exports.checkChallengeExistsAndOwner = (req, res, next) => {
 
     const challenge = results[0];
 
-    if (parseInt(challenge.creator_id) !== parseInt(req.body.user_id)) {
-      return res.status(403).json({ message: "Incorrect Owner!" });
+    if (parseInt(challenge.creator_id) !== parseInt(user_id)) {
+      return res.status(403).json({ message: "Forbidden" });
     }
 
     res.locals.challenge_id = parseInt(req.params.challenge_id);
     res.locals.creator_id = challenge.creator_id;
-
-    res.locals.description = incomingDescription;
-    res.locals.points = req.body.points;
+    res.locals.description = description;
+    res.locals.points = points;
 
     next();
-  });
-};
+  };
 
+  model.selectById(data, callback);
+};
 
 module.exports.updateChallengeById = (req, res) => {
   const data = {
@@ -134,71 +142,43 @@ module.exports.updateChallengeById = (req, res) => {
     points: res.locals.points,
   };
 
-  model.updateById(data, (error, results) => {
+  const callback = (error, results) => {
     if (error) {
       console.error("Error updateChallengeById:", error);
-      return res.status(500).json({ message: "Internal Server error" });
+      return res.status(500).json({ message: "Server error" });
     }
 
     if (results.affectedRows === 0) {
       return res.status(404).json({ message: "Challenge not found" });
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       challenge_id: res.locals.challenge_id,
       challenge: res.locals.description,
       creator_id: res.locals.creator_id,
       points: res.locals.points,
     });
-  });
+  };
+
+  model.updateById(data, callback);
 };
 
 //////////////////////////////////////////////////////
 // DELETE /challenges/:challenge_id
 //////////////////////////////////////////////////////
-module.exports.deleteChallengeCompletions = (req, res, next) => {
-  const data = { id: req.params.challenge_id };
-
-  model.deleteCompletionsByChallengeId(data, (error) => {
-    if (error) {
-      console.error("Error deleteChallengeCompletions:", error);
-      return res.status(500).json({ message: "Internal Server error" });
-    }
-    next();
-  });
-};
-
-module.exports.deleteChallengeById = (req, res) => {
-  const data = { id: req.params.challenge_id };
-
-  model.deleteById(data, (error, results) => {
-    if (error) {
-      console.error("Error deleteChallengeById:", error);
-      return res.status(500).json({ message: "Internal Server error" });
-    }
-
-    if (results.affectedRows === 0) {
-      return res.status(404).json({ message: "Challenge not found" });
-    }
-
-    return res.status(204).send();
-  });
-};
-
-//////////////////////////////////////////////////////
-// DELETE /challenges/:challenge_id owner check
-//////////////////////////////////////////////////////
 module.exports.checkChallengeExistsAndOwnerForDelete = (req, res, next) => {
-  if (req.body.user_id === undefined) {
-    return res.status(400).json({ message: "user_id is required" });
+  const user_id = req.body.user_id;
+
+  if (user_id === undefined) {
+    return res.status(400).json({ message: "Please fill in all the fields" });
   }
 
   const data = { id: req.params.challenge_id };
 
-  model.selectById(data, (error, results) => {
+  const callback = (error, results) => {
     if (error) {
       console.error("Error checkChallengeExistsAndOwnerForDelete:", error);
-      return res.status(500).json({ message: "Internal Server error" });
+      return res.status(500).json({ message: "Server error" });
     }
 
     if (results.length === 0) {
@@ -207,14 +187,48 @@ module.exports.checkChallengeExistsAndOwnerForDelete = (req, res, next) => {
 
     const challenge = results[0];
 
-    if (parseInt(challenge.creator_id) !== parseInt(req.body.user_id)) {
-      return res.status(403).json({ message: "Incorrect Owner!" });
+    if (parseInt(challenge.creator_id) !== parseInt(user_id)) {
+      return res.status(403).json({ message: "Forbidden" });
     }
 
     next();
-  });
+  };
+
+  model.selectById(data, callback);
 };
 
+module.exports.deleteChallengeCompletions = (req, res, next) => {
+  const data = { id: req.params.challenge_id };
+
+  const callback = (error) => {
+    if (error) {
+      console.error("Error deleteChallengeCompletions:", error);
+      return res.status(500).json({ message: "Server error" });
+    }
+    next();
+  };
+
+  model.deleteCompletionsByChallengeId(data, callback);
+};
+
+module.exports.deleteChallengeById = (req, res) => {
+  const data = { id: req.params.challenge_id };
+
+  const callback = (error, results) => {
+    if (error) {
+      console.error("Error deleteChallengeById:", error);
+      return res.status(500).json({ message: "Server error" });
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Challenge not found" });
+    }
+
+    res.status(204).send();
+  };
+
+  model.deleteById(data, callback);
+};
 
 //////////////////////////////////////////////////////
 // GET /challenges/:challenge_id
@@ -222,37 +236,43 @@ module.exports.checkChallengeExistsAndOwnerForDelete = (req, res, next) => {
 module.exports.readUsersByChallengeId = (req, res) => {
   const data = { id: req.params.challenge_id };
 
-  model.selectUsersByChallengeId(data, (error, results) => {
+  const callback = (error, results) => {
     if (error) {
       console.error("Error readUsersByChallengeId:", error);
-      return res.status(500).json({ message: "Internal Server error" });
+      return res.status(500).json({ message: "Server error" });
     }
 
     if (results.length === 0) {
-      return res.status(404).json({ message: "The challenge does not have any user attempts" });
+      return res.status(404).json({ message: "No attempts found" });
     }
 
-    return res.status(200).json(results);
-  });
+    res.status(200).json(results);
+  };
+
+  model.selectUsersByChallengeId(data, callback);
 };
 
 //////////////////////////////////////////////////////
-// POST /challenges/:challenge_id completion
+// POST /challenges/:challenge_id
 //////////////////////////////////////////////////////
 module.exports.validateCompletionBody = (req, res, next) => {
-  if (req.body.user_id === undefined || req.body.details === undefined) {
-    return res.status(400).json({ message: "Error: Please provide user_id and details" });
+  const user_id = req.body.user_id;
+  const details = req.body.details;
+
+  if (user_id === undefined || !details) {
+    return res.status(400).json({ message: "Please fill in all the fields" });
   }
+
   next();
 };
 
 module.exports.checkUserExists = (req, res, next) => {
   const data = { user_id: req.body.user_id };
 
-  model.selectUserById(data, (error, results) => {
+  const callback = (error, results) => {
     if (error) {
       console.error("Error checkUserExists:", error);
-      return res.status(500).json({ message: "Internal Server error" });
+      return res.status(500).json({ message: "Server error" });
     }
 
     if (results.length === 0) {
@@ -260,7 +280,9 @@ module.exports.checkUserExists = (req, res, next) => {
     }
 
     next();
-  });
+  };
+
+  model.selectUserById(data, callback);
 };
 
 module.exports.createCompletion = (req, res, next) => {
@@ -270,16 +292,18 @@ module.exports.createCompletion = (req, res, next) => {
     details: req.body.details,
   };
 
-  model.insertCompletion(data, (error, results) => {
+  const callback = (error, results) => {
     if (error) {
       console.error("Error createCompletion:", error);
-      return res.status(500).json({ message: "Internal Server error" });
+      return res.status(500).json({ message: "Server error" });
     }
 
     res.locals.completion_id = results.insertId;
     res.locals.completion = data;
     next();
-  });
+  };
+
+  model.insertCompletion(data, callback);
 };
 
 module.exports.rewardPointsToUser = (req, res, next) => {
@@ -290,17 +314,19 @@ module.exports.rewardPointsToUser = (req, res, next) => {
     points_to_add: challengePoints,
   };
 
-  model.addPointsToUser(data, (error) => {
+  const callback = (error) => {
     if (error) {
       console.error("Error rewardPointsToUser:", error);
-      return res.status(500).json({ message: "Internal Server error" });
+      return res.status(500).json({ message: "Server error" });
     }
     next();
-  });
+  };
+
+  model.addPointsToUser(data, callback);
 };
 
 module.exports.respondCreatedCompletion = (req, res) => {
-  return res.status(201).json({
+  res.status(201).json({
     completion_id: res.locals.completion_id,
     challenge_id: parseInt(res.locals.completion.challenge_id),
     user_id: parseInt(res.locals.completion.user_id),

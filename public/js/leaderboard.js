@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function loadLeaderboard() {
-    fetchMethod(currentUrl + "/api/leaderboard", (status, data) => {
+    fetchMethod("/api/leaderboard", (status, data) => {
       if (status !== 200) {
         renderEmpty(data.message || "Couldn’t load leaderboard.");
         return;

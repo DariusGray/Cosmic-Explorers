@@ -32,7 +32,7 @@ module.exports.generateToken = (req, res, next) => {
   const callback = (err, token) => {
     if (err) {
       console.error("Error jwt:", err);
-      return res.status(500).json({ message: "Internal Server error" });
+      res.status(500).json({ message: "Internal Server Error" });
     } else {
       res.locals.token = token;
       next();
@@ -59,24 +59,25 @@ module.exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Missing token" });
+    return res.status(401).json({ error: "No token provided" });
   }
 
   const token = authHeader.substring(7);
 
-  // Use the SAME secret key used in generateToken
-  jwt.verify(token, secretKey, (err, decoded) => {
+  if (!token) {
+    return res.status(401).json({ error: "No token provided" });
+  }
+
+  const callback = (err, decoded) => {
     if (err) {
-      console.error("JWT verify error:", err);
-      return res.status(401).json({ message: "Invalid token" });
+      return res.status(401).json({ error: "Invalid token" });
     }
 
-    const uid = decoded.userId ?? decoded.user_id ?? decoded.id;
-    if (!uid) {
-      return res.status(401).json({ message: "Invalid token payload" });
-    }
+    res.locals.userId = decoded.userId;
+    res.locals.tokenTimestamp = decoded.timestamp;
 
-    res.locals.userId = uid;
     next();
-  });
+  };
+
+  jwt.verify(token, secretKey, callback);
 };

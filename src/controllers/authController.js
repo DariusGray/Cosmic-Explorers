@@ -4,7 +4,9 @@ const authModel = require("../models/authModel");
 // VALIDATE REGISTER BODY
 //////////////////////////////////////////////////////
 module.exports.validateRegisterBody = (req, res, next) => {
-  const { username, email, password } = req.body;
+  const username = req.body.username;
+  const email = req.body.email;
+  const password = req.body.password;
 
   if (!username || !email || !password) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -17,9 +19,12 @@ module.exports.validateRegisterBody = (req, res, next) => {
 // CHECK USERNAME/EMAIL CONFLICT
 //////////////////////////////////////////////////////
 module.exports.checkRegisterConflict = (req, res, next) => {
-  const data = { username: req.body.username, email: req.body.email };
+  const data = {
+    username: req.body.username,
+    email: req.body.email,
+  };
 
-  authModel.checkUsernameOrEmailExists(data, (err, results) => {
+  const callback = (err, results) => {
     if (err) {
       console.error("Error checkRegisterConflict:", err);
       return res.status(500).json({ message: "Server error" });
@@ -30,7 +35,9 @@ module.exports.checkRegisterConflict = (req, res, next) => {
     }
 
     next();
-  });
+  };
+
+  authModel.checkUsernameOrEmailExists(data, callback);
 };
 
 //////////////////////////////////////////////////////
@@ -43,13 +50,14 @@ module.exports.registerUser = (req, res, next) => {
     password_hash: res.locals.hash,
   };
 
-  authModel.insertSingleAuthUser(data, (err, results) => {
+  const callback = (err, results) => {
     if (err) {
       console.error("Error registerUser:", err);
       return res.status(500).json({ message: "Server error" });
     }
 
     res.locals.userId = results.insertId;
+
     res.locals.user = {
       user_id: results.insertId,
       username: req.body.username,
@@ -58,17 +66,19 @@ module.exports.registerUser = (req, res, next) => {
       latest_discovered_planet: null,
     };
 
-    res.locals.message = `User ${req.body.username} registered successfully.`;
+    res.locals.message = "Login successful.";
     next();
-  });
-};
+  };
 
+  authModel.insertSingleAuthUser(data, callback);
+};
 
 //////////////////////////////////////////////////////
 // VALIDATE LOGIN BODY
 //////////////////////////////////////////////////////
 module.exports.validateLoginBody = (req, res, next) => {
-  const { email, password } = req.body;
+  const email = req.body.email;
+  const password = req.body.password;
 
   if (!email || !password) {
     return res.status(400).json({ message: "Missing email or password" });
@@ -78,12 +88,12 @@ module.exports.validateLoginBody = (req, res, next) => {
 };
 
 //////////////////////////////////////////////////////
-// LOAD USER BY EMAIL (store hash for bcrypt compare)
+// LOAD USER BY EMAIL
 //////////////////////////////////////////////////////
 module.exports.loadUserByEmail = (req, res, next) => {
   const data = { email: req.body.email };
 
-  authModel.selectByEmail(data, (err, results) => {
+  const callback = (err, results) => {
     if (err) {
       console.error("Error loadUserByEmail:", err);
       return res.status(500).json({ message: "Server error" });
@@ -97,6 +107,7 @@ module.exports.loadUserByEmail = (req, res, next) => {
 
     res.locals.hash = user.password_hash;
     res.locals.userId = user.user_id;
+
     res.locals.user = {
       user_id: user.user_id,
       username: user.username,
@@ -106,11 +117,13 @@ module.exports.loadUserByEmail = (req, res, next) => {
     };
 
     next();
-  });
+  };
+
+  authModel.selectByEmail(data, callback);
 };
 
 //////////////////////////////////////////////////////
-// AFTER PASSWORD VERIFIED, PREPARE TOKEN RESPONSE
+// BEFORE SENDING TOKEN (MESSAGE)
 //////////////////////////////////////////////////////
 module.exports.beforeSendLoginToken = (req, res, next) => {
   res.locals.message = "Login successful.";
@@ -121,7 +134,7 @@ module.exports.beforeSendLoginToken = (req, res, next) => {
 // SEND USER PROFILE WITH TOKEN
 //////////////////////////////////////////////////////
 module.exports.sendLoginResponse = (req, res) => {
-  return res.status(200).json({
+  res.status(200).json({
     message: res.locals.message,
     token: res.locals.token,
     user: res.locals.user,

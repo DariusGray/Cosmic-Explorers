@@ -35,7 +35,7 @@ function getPlanetIcon(planetName) {
 function apiGetUnlockedPlanets(userId, token) {
   return new Promise((resolve, reject) => {
     fetchMethod(
-      currentUrl + `/api/users/${userId}/planets`,
+      `/api/users/${userId}/planets`,
       (status, data) => {
         if (status === 200) resolve(data);
         else reject({ status, data });

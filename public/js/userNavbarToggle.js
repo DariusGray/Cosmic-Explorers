@@ -42,11 +42,24 @@ document.addEventListener("DOMContentLoaded", () => {
   if (logoutBtn) {
     logoutBtn.addEventListener("click", (e) => {
       e.preventDefault();
+
+      // Clear auth
       window.CE_AUTH?.clear?.();
+
+      // Reset theme to default (Mercury Outpost)
+      localStorage.removeItem("CE_CURRENT_THEME"); // same key used in theme.js
+      if (window.CE_THEME?.applyTheme) {
+        window.CE_THEME.applyTheme("mercury-outpost");
+      } else {
+        // fallback: if theme.js isn't loaded yet on this page
+        document.body.dataset.theme = "mercury-outpost";
+      }
+
       renderNav();
       window.location.href = "login.html";
     });
   }
+
 
   renderNav();
 });
