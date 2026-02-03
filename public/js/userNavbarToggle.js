@@ -1,65 +1,76 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const loginBtn = document.getElementById("loginButton");
-  const registerBtn = document.getElementById("registerButton");
-  const profileBtn = document.getElementById("profileButton");
-  const logoutBtn = document.getElementById("logoutButton");
+document.addEventListener("DOMContentLoaded", function () {
+  const loginButton = document.getElementById("loginButton");
+  const registerButton = document.getElementById("registerButton");
+  const profileButton = document.getElementById("profileButton");
+  const logoutButton = document.getElementById("logoutButton");
 
   const greeting = document.getElementById("navGreeting");
   const navUsername = document.getElementById("navUsername");
 
-  function show(el) { el && el.classList.remove("d-none"); }
-  function hide(el) { el && el.classList.add("d-none"); }
-
-  function getDisplayName(user) {
-    if (!user) return "Explorer";
-    return user.username || user.email || "Explorer";
-  }
-
-  function renderNav() {
-    const user = window.CE_AUTH?.getUser?.() || null;
-    const token = window.CE_AUTH?.getToken?.() || null;
-    const isAuthed = !!(user && token);
-
-    if (isAuthed) {
-      hide(loginBtn);
-      hide(registerBtn);
-      show(profileBtn);
-      show(logoutBtn);
-
-      if (greeting && navUsername) {
-        navUsername.textContent = getDisplayName(user);
-        show(greeting);
-      }
-    } else {
-      show(loginBtn);
-      show(registerBtn);
-      hide(profileBtn);
-      hide(logoutBtn);
-      hide(greeting);
+  function showElement(element) {
+    if (element) {
+      element.classList.remove("d-none");
     }
   }
 
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", (e) => {
-      e.preventDefault();
+  function hideElement(element) {
+    if (element) {
+      element.classList.add("d-none");
+    }
+  }
 
-      // Clear auth
-      window.CE_AUTH?.clear?.();
+  function getStoredToken() {
+    if (window.CE_AUTH && window.CE_AUTH.getToken) {
+      return window.CE_AUTH.getToken();
+    }
+    return localStorage.getItem("token");
+  }
 
-      // Reset theme to default (Mercury Outpost)
-      localStorage.removeItem("CE_CURRENT_THEME"); // same key used in theme.js
-      if (window.CE_THEME?.applyTheme) {
-        window.CE_THEME.applyTheme("mercury-outpost");
-      } else {
-        // fallback: if theme.js isn't loaded yet on this page
-        document.body.dataset.theme = "mercury-outpost";
+  function getStoredUser() {
+    if (window.CE_AUTH && window.CE_AUTH.getUser) {
+      return window.CE_AUTH.getUser();
+    }
+    return null;
+  }
+
+  function renderNavbar() {
+    const token = getStoredToken();
+    const user = getStoredUser();
+
+    if (token) {
+      hideElement(loginButton);
+      hideElement(registerButton);
+      showElement(profileButton);
+      showElement(logoutButton);
+
+      if (greeting && navUsername && user) {
+        navUsername.innerText = user.username || user.email || "Explorer";
+        showElement(greeting);
+      }
+    } else {
+      showElement(loginButton);
+      showElement(registerButton);
+      hideElement(profileButton);
+      hideElement(logoutButton);
+      hideElement(greeting);
+    }
+  }
+
+  if (logoutButton) {
+    logoutButton.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      if (window.CE_AUTH && window.CE_AUTH.clear) {
+        window.CE_AUTH.clear();
       }
 
-      renderNav();
+      localStorage.removeItem("token");
+      localStorage.removeItem("CE_CURRENT_THEME");
+
+      renderNavbar();
       window.location.href = "login.html";
     });
   }
 
-
-  renderNav();
+  renderNavbar();
 });

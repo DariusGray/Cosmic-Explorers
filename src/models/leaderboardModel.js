@@ -1,4 +1,3 @@
-// models/leaderboardModel.js
 const pool = require("../services/db");
 
 module.exports.selectTopUsers = (callback) => {

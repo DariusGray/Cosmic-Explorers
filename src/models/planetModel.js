@@ -1,4 +1,3 @@
-// models/planetModel.js
 const pool = require("../services/db");
 
 module.exports.selectAllPlanets = (data, callback) => {

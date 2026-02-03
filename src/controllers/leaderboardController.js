@@ -3,7 +3,7 @@ const model = require("../models/leaderboardModel");
 
 module.exports.getTopUsers = (req, res) => {
   model.selectTopUsers((error, results) => {
-    if (error) return res.status(500).json({ message: "InternalServer error" });
+    if (error) return res.status(500).json({ message: "Internal Server Error" });
     return res.status(200).json(results);
   });
 };
@@ -16,7 +16,7 @@ module.exports.getTopUsersWithLimit = (req, res) => {
   }
 
   model.selectTopUsersWithLimit({ limit }, (error, results) => {
-    if (error) return res.status(500).json({ message: "Internal Server error" });
+    if (error) return res.status(500).json({ message: "Internal Server Error" });
     return res.status(200).json(results);
   });
 };

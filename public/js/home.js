@@ -1,4 +1,3 @@
-// public/js/home.js
 document.addEventListener("DOMContentLoaded", () => {
   const hint = document.getElementById("homeAuthHint");
   const elUser = document.getElementById("homeUsername");

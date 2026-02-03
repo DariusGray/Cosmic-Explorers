@@ -21,7 +21,7 @@ module.exports.createNewChallenge = (req, res, next) => {
   const callback = (error, results) => {
     if (error) {
       console.error("Error createNewChallenge:", error);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
 
     res.locals.challenge_id = results.insertId;
@@ -37,7 +37,7 @@ module.exports.readChallengeByIdAfterCreate = (req, res) => {
   const callback = (error, results) => {
     if (error) {
       console.error("Error readChallengeByIdAfterCreate:", error);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
 
     if (results.length === 0) {
@@ -63,7 +63,7 @@ module.exports.readAllChallenges = (req, res) => {
   const callback = (error, results) => {
     if (error) {
       console.error("Error readAllChallenges:", error);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
     res.status(200).json(results);
   };
@@ -80,7 +80,7 @@ module.exports.checkChallengeExists = (req, res, next) => {
   const callback = (error, results) => {
     if (error) {
       console.error("Error checkChallengeExists:", error);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
 
     if (results.length === 0) {
@@ -111,7 +111,7 @@ module.exports.checkChallengeExistsAndOwner = (req, res, next) => {
   const callback = (error, results) => {
     if (error) {
       console.error("Error checkChallengeExistsAndOwner:", error);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
 
     if (results.length === 0) {
@@ -145,7 +145,7 @@ module.exports.updateChallengeById = (req, res) => {
   const callback = (error, results) => {
     if (error) {
       console.error("Error updateChallengeById:", error);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
 
     if (results.affectedRows === 0) {
@@ -178,7 +178,7 @@ module.exports.checkChallengeExistsAndOwnerForDelete = (req, res, next) => {
   const callback = (error, results) => {
     if (error) {
       console.error("Error checkChallengeExistsAndOwnerForDelete:", error);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
 
     if (results.length === 0) {
@@ -203,7 +203,7 @@ module.exports.deleteChallengeCompletions = (req, res, next) => {
   const callback = (error) => {
     if (error) {
       console.error("Error deleteChallengeCompletions:", error);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
     next();
   };
@@ -217,7 +217,7 @@ module.exports.deleteChallengeById = (req, res) => {
   const callback = (error, results) => {
     if (error) {
       console.error("Error deleteChallengeById:", error);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
 
     if (results.affectedRows === 0) {
@@ -239,7 +239,7 @@ module.exports.readUsersByChallengeId = (req, res) => {
   const callback = (error, results) => {
     if (error) {
       console.error("Error readUsersByChallengeId:", error);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
 
     if (results.length === 0) {
@@ -272,7 +272,7 @@ module.exports.checkUserExists = (req, res, next) => {
   const callback = (error, results) => {
     if (error) {
       console.error("Error checkUserExists:", error);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
 
     if (results.length === 0) {
@@ -295,7 +295,7 @@ module.exports.createCompletion = (req, res, next) => {
   const callback = (error, results) => {
     if (error) {
       console.error("Error createCompletion:", error);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
 
     res.locals.completion_id = results.insertId;
@@ -317,7 +317,7 @@ module.exports.rewardPointsToUser = (req, res, next) => {
   const callback = (error) => {
     if (error) {
       console.error("Error rewardPointsToUser:", error);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
     next();
   };

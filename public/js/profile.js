@@ -1,6 +1,3 @@
-// public/js/profile.js
-// Requires: getCurrentURL.js, queryCmds.js, auth.js
-
 function showHint(el, text) {
   if (!el) return;
   el.innerHTML = `

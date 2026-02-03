@@ -1,35 +1,60 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("loginForm");
-  const msg = document.getElementById("loginMsg");
+document.addEventListener("DOMContentLoaded", function () {
+  const loginForm = document.getElementById("loginForm");
+  const loginMsg = document.getElementById("loginMsg");
 
-  if (!form) return;
+  if (loginForm == null) {
+    return;
+  }
 
-  const setMsg = (text, ok = false) => {
-    if (!msg) return;
-    msg.textContent = text || "";
-    msg.classList.toggle("text-danger", !ok);
-    msg.classList.toggle("text-success", ok);
-  };
+  function setMessage(message, isSuccess) {
+    if (loginMsg == null) {
+      return;
+    }
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    setMsg("Logging in...");
+    loginMsg.innerText = message || "";
 
-    const email = document.getElementById("email")?.value.trim();
-    const password = document.getElementById("password")?.value;
+    if (isSuccess) {
+      loginMsg.classList.remove("text-danger");
+      loginMsg.classList.add("text-success");
+    } else {
+      loginMsg.classList.remove("text-success");
+      loginMsg.classList.add("text-danger");
+    }
+  }
 
-    fetchMethod(currentUrl + "/api/auth/login", (status, res) => {
-      if (status === 200 && res.token) {
-        CE_AUTH.setToken(res.token);
+  loginForm.addEventListener("submit", function (event) {
+    event.preventDefault();
 
-        if (res.user) CE_AUTH.setUser(res.user);
+    setMessage("Logging in...", false);
 
-        setMsg("Login successful!", true);
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
 
+    const email = emailInput ? emailInput.value.trim() : "";
+    const password = passwordInput ? passwordInput.value : "";
+
+    const data = {
+      email: email,
+      password: password,
+    };
+
+    const callback = function (responseStatus, responseData) {
+      if (responseStatus == 200 && responseData.token) {
+        if (window.CE_AUTH && window.CE_AUTH.setToken) {
+          window.CE_AUTH.setToken(responseData.token);
+        }
+
+        if (responseData.user && window.CE_AUTH && window.CE_AUTH.setUser) {
+          window.CE_AUTH.setUser(responseData.user);
+        }
+
+        setMessage("Login successful!", true);
         window.location.href = "challenges.html";
       } else {
-        setMsg(res.message || "Login failed.", false);
+        setMessage(responseData.message || "Login failed.", false);
       }
-    }, "POST", { email, password });
+    };
+
+    fetchMethod(currentUrl + "/api/auth/login", callback, "POST", data);
   });
 });

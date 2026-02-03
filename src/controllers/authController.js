@@ -27,7 +27,7 @@ module.exports.checkRegisterConflict = (req, res, next) => {
   const callback = (err, results) => {
     if (err) {
       console.error("Error checkRegisterConflict:", err);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
 
     if (results.length > 0) {
@@ -53,7 +53,7 @@ module.exports.registerUser = (req, res, next) => {
   const callback = (err, results) => {
     if (err) {
       console.error("Error registerUser:", err);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
 
     res.locals.userId = results.insertId;
@@ -96,7 +96,7 @@ module.exports.loadUserByEmail = (req, res, next) => {
   const callback = (err, results) => {
     if (err) {
       console.error("Error loadUserByEmail:", err);
-      return res.status(500).json({ message: "Server error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
 
     if (results.length === 0) {

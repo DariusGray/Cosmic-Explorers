@@ -1,43 +1,70 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("registerForm");
-  const msg = document.getElementById("registerMsg");
+document.addEventListener("DOMContentLoaded", function () {
+  const registerForm = document.getElementById("registerForm");
+  const registerMsg = document.getElementById("registerMsg");
 
-  if (!form) return;
+  if (registerForm == null) {
+    return;
+  }
 
-  const setMsg = (text, ok = false) => {
-    if (!msg) return;
-    msg.textContent = text || "";
-    msg.classList.toggle("text-danger", !ok);
-    msg.classList.toggle("text-success", ok);
-  };
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const username = document.getElementById("username")?.value.trim();
-    const email = document.getElementById("email")?.value.trim();
-    const password = document.getElementById("password")?.value;
-    const confirmPassword = document.getElementById("confirmPassword")?.value;
-
-    if (password !== confirmPassword) {
-      setMsg("Passwords do not match.", false);
+  function setMessage(message, isSuccess) {
+    if (registerMsg == null) {
       return;
     }
 
-    setMsg("Registering...");
+    registerMsg.innerText = message || "";
 
-    fetchMethod(currentUrl + "/api/auth/register", (status, res) => {
-      if ((status === 200 || status === 201) && res.token) {
-        CE_AUTH.setToken(res.token);
+    if (isSuccess) {
+      registerMsg.classList.remove("text-danger");
+      registerMsg.classList.add("text-success");
+    } else {
+      registerMsg.classList.remove("text-success");
+      registerMsg.classList.add("text-danger");
+    }
+  }
 
-        // after backend fix, register will also return user
-        if (res.user) CE_AUTH.setUser(res.user);
+  registerForm.addEventListener("submit", function (event) {
+    event.preventDefault();
 
-        setMsg("Registration successful!", true);
+    const usernameInput = document.getElementById("username");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const confirmPasswordInput = document.getElementById("confirmPassword");
+
+    const username = usernameInput ? usernameInput.value.trim() : "";
+    const email = emailInput ? emailInput.value.trim() : "";
+    const password = passwordInput ? passwordInput.value : "";
+    const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : "";
+
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match.", false);
+      return;
+    }
+
+    setMessage("Registering...", false);
+
+    const data = {
+      username: username,
+      email: email,
+      password: password,
+    };
+
+    const callback = function (responseStatus, responseData) {
+      if ((responseStatus == 200 || responseStatus == 201) && responseData.token) {
+        if (window.CE_AUTH && window.CE_AUTH.setToken) {
+          window.CE_AUTH.setToken(responseData.token);
+        }
+
+        if (responseData.user && window.CE_AUTH && window.CE_AUTH.setUser) {
+          window.CE_AUTH.setUser(responseData.user);
+        }
+
+        setMessage("Registration successful!", true);
         window.location.href = "challenges.html";
       } else {
-        setMsg(res.message || "Registration failed.", false);
+        setMessage(responseData.message || "Registration failed.", false);
       }
-    }, "POST", { username, email, password });
+    };
+
+    fetchMethod(currentUrl + "/api/auth/register", callback, "POST", data);
   });
 });
