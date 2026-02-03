@@ -64,10 +64,10 @@ The application combines **authentication, challenge management, point tracking,
   - Fetch API
   - Promises and `async/await`
 - Token-based authentication handled via `Authorization: Bearer` headers
-- UI dynamically updates based on backend responses (points, planets, rankings
+- UI dynamically updates based on backend responses (points, planets, rankings)
 
 ## 🔐 Security Considerations
-- Sensitive credentials (such as database configuration and JWT secrets) are stored in environment variables and are not hardcoded into the source code.
+- Sensitive credentials (such as database configuration and JWT secrets are stored in environment variables and are not hardcoded into the source code.
 - JSON Web Tokens (JWT) are required for all endpoints that access or modify protected resources, ensuring that only authenticated users can perform sensitive operations.
 - User passwords are securely hashed using **bcrypt** before being stored in the database, preventing exposure of plain-text credentials.
 - Ownership checks are implemented on protected endpoints to ensure that users can only create, update, or delete data that belongs to them.
