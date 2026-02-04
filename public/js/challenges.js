@@ -22,15 +22,21 @@ function refreshPointsFromServer() {
   const token = CE_AUTH.getToken();
   if (!user || !token) return;
 
-  fetchMethod(`/api/users/${user.user_id}`, (status, data) => {
-    if (status === 200 && typeof data.points === "number") {
-      const updated = { ...user, points: data.points };
-      CE_AUTH.setUser(updated);
-      setPointsUI(data.points);
-    } else {
-      console.warn("Could not refresh points", status, data);
-    }
-  }, "GET", null, token);
+  fetchMethod(
+    `/api/users/${user.user_id}`,
+    (status, data) => {
+      if (status === 200 && typeof data.points === "number") {
+        const updated = { ...user, points: data.points };
+        CE_AUTH.setUser(updated);
+        setPointsUI(data.points);
+      } else {
+        console.warn("Could not refresh points", status, data);
+      }
+    },
+    "GET",
+    null,
+    token
+  );
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -57,11 +63,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const pointsInput = document.getElementById("pointsInput");
   const createAlert = document.getElementById("createChallengeAlert");
 
+  // Complete mission modal
   const completeMissionModalEl = document.getElementById("completeMissionModal");
   const completeMissionForm = document.getElementById("completeMissionForm");
   const completeMissionComment = document.getElementById("completeMissionComment");
   const completeMissionAlert = document.getElementById("completeMissionAlert");
   const confirmCompleteBtn = document.getElementById("confirmCompleteBtn");
+
+  // Edit mission modal
+  const editChallengeModalEl = document.getElementById("editChallengeModal");
+  const editChallengeForm = document.getElementById("editChallengeForm");
+  const editChallengeId = document.getElementById("editChallengeId");
+  const editTaskInput = document.getElementById("editTaskInput");
+  const editPointsInput = document.getElementById("editPointsInput");
+  const editChallengeAlert = document.getElementById("editChallengeAlert");
+
+  // Attempts modal
+  const attemptsModalEl = document.getElementById("attemptsModal");
+  const attemptsList = document.getElementById("attemptsList");
+  const attemptsAlert = document.getElementById("attemptsAlert");
 
   // ===== Helpers =====
   const show = (el) => el && el.classList.remove("d-none");
@@ -121,6 +141,12 @@ document.addEventListener("DOMContentLoaded", () => {
     return { user, token };
   }
 
+  function getCurrentUserId() {
+    const user = window.CE_AUTH?.getUser?.() || null;
+    if (!user) return null;
+    return user.user_id ?? user.id ?? user.userId ?? null;
+  }
+
   function hideModalSafely(modalEl) {
     if (!modalEl) return;
     try {
@@ -145,6 +171,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderChallenges(list) {
     challengesContainer.innerHTML = "";
 
+    const currentUserId = getCurrentUserId();
+
     list.forEach((c) => {
       const node = template.content.cloneNode(true);
 
@@ -152,25 +180,59 @@ document.addEventListener("DOMContentLoaded", () => {
       const desc = node.querySelector(".challenge-description");
       const pts = node.querySelector(".challenge-points");
       const status = node.querySelector(".challenge-status");
-      const btn = node.querySelector(".complete-btn");
+
+      const completeBtn = node.querySelector(".complete-btn");
+
+      // New buttons
+      const ownerActions = node.querySelector(".owner-actions");
+      const editBtn = node.querySelector(".edit-btn");
+      const deleteBtn = node.querySelector(".delete-btn");
+      const attemptsBtn = node.querySelector(".view-attempts-btn");
 
       const id = c.challenge_id ?? c.id ?? c.challengeId ?? c.challengeID;
       const description = c.description ?? "";
       const points = c.points ?? 0;
+      const creatorId = c.creator_id ?? c.creatorId ?? c.creatorID ?? null;
 
       if (icon) icon.textContent = iconForPoints(points);
       if (desc) desc.textContent = description;
       if (pts) pts.textContent = `Reward: ${points} Pts`;
-
-      if (btn) {
-        btn.dataset.challengeId = String(id ?? "");
-        btn.dataset.rewardPoints = String(points ?? 0);
-      }
-
       if (status) status.textContent = "";
 
-      if (!id && btn) {
-        btn.disabled = true;
+      // Complete button dataset
+      if (completeBtn) {
+        completeBtn.dataset.challengeId = String(id ?? "");
+        completeBtn.dataset.rewardPoints = String(points ?? 0);
+      }
+
+      // Owner-only actions
+      const isOwner =
+        currentUserId !== null &&
+        creatorId !== null &&
+        Number(currentUserId) === Number(creatorId);
+
+      if (ownerActions) {
+        if (isOwner) ownerActions.classList.remove("d-none");
+        else ownerActions.classList.add("d-none");
+      }
+
+      if (editBtn) {
+        editBtn.dataset.challengeId = String(id ?? "");
+        editBtn.dataset.description = description;
+        editBtn.dataset.points = String(points ?? 0);
+      }
+
+      if (deleteBtn) {
+        deleteBtn.dataset.challengeId = String(id ?? "");
+      }
+
+      if (attemptsBtn) {
+        attemptsBtn.dataset.challengeId = String(id ?? "");
+      }
+
+      // Disable complete if missing id
+      if (!id && completeBtn) {
+        completeBtn.disabled = true;
         if (status) status.textContent = "Unavailable right now";
       }
 
@@ -182,20 +244,24 @@ document.addEventListener("DOMContentLoaded", () => {
   function loadChallenges() {
     setLoadingState();
 
-    fetchMethod("/api/challenges", (status, data) => {
-      if (status === 200) {
-        const list = Array.isArray(data) ? data : (data.challenges || data.data || []);
-        if (!list.length) {
+    fetchMethod(
+      "/api/challenges",
+      (status, data) => {
+        if (status === 200) {
+          const list = Array.isArray(data) ? data : data.challenges || data.data || [];
+          if (!list.length) {
+            setEmptyState();
+            return;
+          }
+          setListState();
+          renderChallenges(list);
+        } else {
           setEmptyState();
-          return;
+          setAlert(pageAlert, data.message || "Couldn’t load missions right now. Try again.", "warning");
         }
-        setListState();
-        renderChallenges(list);
-      } else {
-        setEmptyState();
-        setAlert(pageAlert, data.message || "Couldn’t load missions right now. Try again.", "warning");
-      }
-    }, "GET");
+      },
+      "GET"
+    );
   }
 
   // ===== Create Mission =====
@@ -252,9 +318,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ===== Complete Mission =====
   const pendingCompletion = {
     btn: null,
-    originalText: "",
     challengeId: null,
     rewardPoints: 0,
   };
@@ -276,7 +342,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       pendingCompletion.btn = btn;
-      pendingCompletion.originalText = btn.textContent;
       pendingCompletion.challengeId = challengeId;
       pendingCompletion.rewardPoints = rewardPoints;
 
@@ -284,7 +349,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (completeMissionComment) completeMissionComment.value = "";
 
       showModalSafely(completeMissionModalEl);
-
       setTimeout(() => completeMissionComment?.focus?.(), 150);
     });
 
@@ -315,15 +379,12 @@ document.addEventListener("DOMContentLoaded", () => {
           confirmCompleteBtn.textContent = "Completing…";
         }
 
-        const payload = {
-          user_id: userId,
-          details
-        };
+        const payload = { user_id: userId, details };
 
         fetchMethod(
           `/api/challenges/${encodeURIComponent(challengeId)}`,
           (status, res) => {
-            const ok = (status === 200 || status === 201);
+            const ok = status === 200 || status === 201;
 
             if (!ok) {
               if (confirmCompleteBtn) {
@@ -344,6 +405,7 @@ document.addEventListener("DOMContentLoaded", () => {
               confirmCompleteBtn.textContent = "Submit & Complete";
             }
 
+            // update button
             const btn = pendingCompletion.btn;
             if (btn) {
               btn.textContent = "Completed";
@@ -358,7 +420,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // clear pending
             pendingCompletion.btn = null;
-            pendingCompletion.originalText = "";
             pendingCompletion.challengeId = null;
             pendingCompletion.rewardPoints = 0;
           },
@@ -380,7 +441,177 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // ===== Edit Mission (Owner only) =====
+  function setupEditMission() {
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest(".edit-btn");
+      if (!btn) return;
+
+      const { user, token } = getUserAndToken();
+      if (!user || !token) {
+        setAlert(pageAlert, "Please log in first.", "warning");
+        return;
+      }
+
+      const id = btn.dataset.challengeId;
+      if (!id) return;
+
+      if (editChallengeId) editChallengeId.value = id;
+      if (editTaskInput) editTaskInput.value = btn.dataset.description || "";
+      if (editPointsInput) editPointsInput.value = btn.dataset.points || "1";
+
+      clearAlert(editChallengeAlert);
+      showModalSafely(editChallengeModalEl);
+    });
+
+    if (!editChallengeForm) return;
+
+    editChallengeForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      clearAlert(editChallengeAlert);
+
+      const { user, token } = getUserAndToken();
+      if (!user || !token) {
+        setAlert(editChallengeAlert, "You need to be logged in.", "danger");
+        return;
+      }
+
+      const id = (editChallengeId?.value || "").trim();
+      const description = (editTaskInput?.value || "").trim();
+      const points = Number(editPointsInput?.value);
+
+      if (!id) {
+        setAlert(editChallengeAlert, "Missing mission id.", "danger");
+        return;
+      }
+      if (!description) {
+        setAlert(editChallengeAlert, "Please enter a mission task.", "danger");
+        return;
+      }
+      if (!Number.isFinite(points) || points <= 0) {
+        setAlert(editChallengeAlert, "Please enter a valid point reward.", "danger");
+        return;
+      }
+
+      const userId = user.user_id ?? user.id ?? user.userId;
+      const payload = { user_id: userId, description, points };
+
+      fetchMethod(
+        `/api/challenges/${encodeURIComponent(id)}`,
+        (status, res) => {
+          if (status === 200) {
+            hideModalSafely(editChallengeModalEl);
+            setAlert(pageAlert, "Mission updated successfully.", "info");
+            loadChallenges();
+          } else {
+            setAlert(editChallengeAlert, res.message || "Couldn’t update mission.", "danger");
+          }
+        },
+        "PUT",
+        payload,
+        token
+      );
+    });
+  }
+
+  // ===== Delete Mission (Owner only) =====
+  function setupDeleteMission() {
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest(".delete-btn");
+      if (!btn) return;
+
+      const { user, token } = getUserAndToken();
+      if (!user || !token) {
+        setAlert(pageAlert, "Please log in first.", "warning");
+        return;
+      }
+
+      const id = btn.dataset.challengeId;
+      if (!id) return;
+
+      const ok = confirm("Delete this mission? This cannot be undone.");
+      if (!ok) return;
+
+      const userId = user.user_id ?? user.id ?? user.userId;
+
+      // Backend requires user_id in body because of requireSameUserBody
+      const payload = { user_id: userId };
+
+      fetchMethod(
+        `/api/challenges/${encodeURIComponent(id)}`,
+        (status, res) => {
+          if (status === 204) {
+            setAlert(pageAlert, "Mission deleted.", "info");
+            loadChallenges();
+          } else {
+            setAlert(pageAlert, res.message || "Couldn’t delete mission.", "warning");
+          }
+        },
+        "DELETE",
+        payload,
+        token
+      );
+    });
+  }
+
+  // ===== View Attempts (GET /api/challenges/:challenge_id) =====
+  function setupViewAttempts() {
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest(".view-attempts-btn");
+      if (!btn) return;
+
+      const id = btn.dataset.challengeId;
+      if (!id) return;
+
+      if (attemptsList) attemptsList.innerHTML = "";
+      if (attemptsAlert) {
+        attemptsAlert.textContent = "";
+        attemptsAlert.classList.add("d-none");
+      }
+
+      fetchMethod(
+        `/api/challenges/${encodeURIComponent(id)}`,
+        (status, data) => {
+          if (status !== 200) {
+            if (attemptsAlert) {
+              attemptsAlert.textContent = data.message || "No attempts found.";
+              attemptsAlert.classList.remove("d-none");
+            }
+            showModalSafely(attemptsModalEl);
+            return;
+          }
+
+          const list = Array.isArray(data) ? data : [];
+          if (!list.length) {
+            if (attemptsAlert) {
+              attemptsAlert.textContent = "No attempts found.";
+              attemptsAlert.classList.remove("d-none");
+            }
+            showModalSafely(attemptsModalEl);
+            return;
+          }
+
+          list.forEach((row) => {
+            const li = document.createElement("li");
+            li.className = "list-group-item bg-dark text-white border-secondary";
+            const uid = row.user_id ?? row.userId ?? "";
+            const details = row.details ?? "";
+            li.textContent = `User ${uid}: ${details}`;
+            attemptsList.appendChild(li);
+          });
+
+          showModalSafely(attemptsModalEl);
+        },
+        "GET"
+      );
+    });
+  }
+
+  // ===== Init =====
   setupCompleteMission();
   setupCreateMission();
+  setupEditMission();
+  setupDeleteMission();
+  setupViewAttempts(); 
   loadChallenges();
 });

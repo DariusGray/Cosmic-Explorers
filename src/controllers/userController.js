@@ -85,3 +85,16 @@ module.exports.updateUserById = (req, res, next) => {
     next();
   });
 };
+
+module.exports.readUserCompletionsByUserId = (req, res) => {
+  const data = { user_id: req.params.user_id };
+
+  model.selectCompletionsByUserId(data, (error, results) => {
+    if (error) {
+      console.error("Error readUserCompletionsByUserId:", error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+
+    return res.status(200).json(results);
+  });
+};

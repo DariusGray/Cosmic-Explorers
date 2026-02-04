@@ -111,6 +111,22 @@
                     data-challenge-id="">
               Complete Mission
             </button>
+            <div class="d-grid gap-2 mt-2 owner-actions d-none">
+            <button class="btn btn-outline-light w-100 py-2 edit-btn" type="button" data-challenge-id="">
+              Edit Mission
+            </button>
+
+            <button class="btn btn-outline-danger w-100 py-2 delete-btn" type="button" data-challenge-id="">
+              Delete Mission
+            </button>
+          </div>
+
+          <button class="btn btn-outline-secondary w-100 py-2 mt-2 view-attempts-btn"
+                  type="button"
+                  data-challenge-id="">
+            View Attempts
+          </button>
+
           </div>
         </div>
       </div>
@@ -195,6 +211,65 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="editChallengeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content card p-0 shadow-lg">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title fw-bold">Edit Mission</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <div id="editChallengeAlert" class="alert alert-danger d-none" role="alert"></div>
+
+          <form id="editChallengeForm" autocomplete="off">
+            <input type="hidden" id="editChallengeId" />
+
+            <div class="mb-3">
+              <label for="editTaskInput" class="form-label small opacity-75">Mission Task</label>
+              <input type="text" class="form-control bg-dark text-white border-secondary"
+                    id="editTaskInput" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="editPointsInput" class="form-label small opacity-75">Point Reward</label>
+              <input type="number" class="form-control bg-dark text-white border-secondary"
+                    id="editPointsInput" min="1" step="1" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+              Save Changes
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="attemptsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content card p-0 shadow-lg">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title fw-bold">Mission Attempts</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <div id="attemptsAlert" class="alert alert-warning d-none" role="alert"></div>
+
+          <ul id="attemptsList" class="list-group list-group-flush">
+            <!-- attempts will be inserted here -->
+          </ul>
+
+          <p class="small opacity-50 mt-3 mb-0">
+            Attempts show the user_id and completion note saved for this mission.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <footer class="py-3 text-center border-top border-secondary">
     <p class="m-0 small opacity-50">&copy; 2026 Cosmic Explorers</p>

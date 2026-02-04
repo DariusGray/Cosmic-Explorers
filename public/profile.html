@@ -94,6 +94,34 @@
               </div>
             </div>
           </template>
+          <hr class="border-secondary opacity-25 my-4">
+
+          <h3 class="fw-bold text-white mb-2">Completed Missions</h3>
+          <p class="opacity-50 mb-4 small">A log of missions you have completed so far.</p>
+
+          <div id="completedMissionsLoading" class="theme-hint p-4 text-center">
+            <div class="opacity-75">Loading your mission history…</div>
+          </div>
+
+          <div id="completedMissionsEmpty" class="theme-hint p-4 text-center d-none">
+            <div class="opacity-75">No missions completed yet.</div>
+            <div class="small opacity-50">Complete a mission to see it appear here.</div>
+          </div>
+
+          <ul id="completedMissionsList" class="list-group list-group-flush d-none"></ul>
+
+          <template id="completedMissionItemTemplate">
+            <li class="list-group-item bg-dark text-white border-secondary">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="me-3">
+                  <div class="fw-bold mission-title">Mission</div>
+                  <div class="small opacity-75 mission-note">Note</div>
+                </div>
+                <span class="badge rounded-pill text-bg-info mission-points">0 pts</span>
+              </div>
+            </li>
+          </template>
+
 
         </div>
       </div>
