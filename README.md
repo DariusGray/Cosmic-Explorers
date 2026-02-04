@@ -14,6 +14,13 @@ The application combines **authentication, challenge management, point tracking,
 - Once logged in, users can access protected features such as challenges, planets, and rankings.
 ### 2. Fitness & Wellness Challenges
 - Users can view a list of available fitness and wellness challenges.
+- Users can also create new missions (challenges) from the Challenges page.
+- Challenge creators can manage their own missions:
+  - Edit their mission description and points
+  - Delete their missions
+  - (Only the creator can edit/delete; other users cannot)
+- Users can view attempts for each mission (“View Attempts”) to see completion notes submitted by users.
+
 - Each challenge has a description and a fixed point reward.
 - When a user completes a challenge:
   - The completion is recorded in the system.
@@ -42,6 +49,13 @@ The application combines **authentication, challenge management, point tracking,
   - 🥈 Silver background for Rank 2
   - 🥉 Bronze background for Rank 3
 - Hover effects reveal usernames and enhance visual feedback.
+### 7. Profile & Activity Log 👤
+- The Profile page shows:
+  - The user’s current points
+  - Unlocked planets (achievements)
+  - A completed missions log (mission history)
+- The completed missions log displays missions the user has completed, including the mission description, points earned, and completion note.
+
 ## ⚙️ Technical Features 
 ### Backend
 - Built using **Node.js** and **Express**
@@ -56,6 +70,11 @@ The application combines **authentication, challenge management, point tracking,
   - Validate JWT tokens
   - Authorise users
   - Prevent duplicate challenge completions
+- Challenge ownership rules:
+  - Only the creator of a challenge can edit or delete it (creator_id enforced on backend).
+- Additional protected endpoint:
+  - Users can retrieve their completed mission history via a protected route (JWT + ownership check).
+
 ### Frontend
 - Built with **HTML, CSS, and JavaScript**
 - Styled using **Bootstrap** with additional custom CSS
@@ -65,14 +84,19 @@ The application combines **authentication, challenge management, point tracking,
   - Promises and `async/await`
 - Token-based authentication handled via `Authorization: Bearer` headers
 - UI dynamically updates based on backend responses (points, planets, rankings)
+- Challenges page includes owner-only UI actions (Edit/Delete) that appear only for the challenge creator.
+- Profile page dynamically loads and renders the user’s completed missions log from the backend.
+
 
 ## 🔐 Security Considerations
-- Sensitive credentials (such as database configuration and JWT secrets are stored in environment variables and are not hardcoded into the source code.
+- Sensitive credentials such as database configuration and JWT secrets are stored in environment variables and are not hardcoded into the source code.
 - JSON Web Tokens (JWT) are required for all endpoints that access or modify protected resources, ensuring that only authenticated users can perform sensitive operations.
 - User passwords are securely hashed using **bcrypt** before being stored in the database, preventing exposure of plain-text credentials.
 - Ownership checks are implemented on protected endpoints to ensure that users can only create, update, or delete data that belongs to them.
 - Server-side error handling is implemented to prevent sensitive error details from being exposed to clients.
-Internal errors are logged on the server for debugging purposes, while generic responses such as **“Internal Server Error”** are returned to the client to reduce the risk of information leakage.
+- Internal errors are logged on the server for debugging purposes, while generic responses such as **“Internal Server Error”** are returned to the client to reduce the risk of information leakage.
+- Ownership checks are enforced for challenge editing/deleting, ensuring only the challenge creator can modify or remove the mission.
+
 ## 🧪 Testing
 - API endpoints tested using Postman
 - Successful tests include:
