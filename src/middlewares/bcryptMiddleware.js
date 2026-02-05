@@ -15,7 +15,7 @@ module.exports.comparePassword = (req, res, next) => {
   const callback = (err, isMatch) => {
     if (err) {
       console.error("Error bcrypt:", err);
-      res.status(500).json(err);
+      return res.status(500).json({ message: "Internal Server Error" });
     } else {
       if (isMatch) {
         next();
@@ -37,7 +37,7 @@ module.exports.hashPassword = (req, res, next) => {
   const callback = (err, hash) => {
     if (err) {
       console.error("Error bcrypt:", err);
-      res.status(500).json(err);
+      return res.status(500).json({ message: "Internal Server Error" });
     } else {
       res.locals.hash = hash;
       next();

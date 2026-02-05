@@ -61,30 +61,6 @@ module.exports.readUserByUsername = (req, res, next) => {
   });
 };
 
-module.exports.updateUserById = (req, res, next) => {
-  if (res.locals.user_id === undefined) {
-    return res.status(404).json({ message: "Error: User not found" });
-  }
-
-  const data = {
-    id: res.locals.user_id,
-    username: res.locals.username,
-    points: res.locals.points,
-  };
-
-  model.updateById(data, (error, results) => {
-    if (error) {
-      console.error("Error updateUserById:", error);
-      return res.status(500).json({ message: "Internal Server Error" });
-    }
-
-    if (results.affectedRows === 0) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    next();
-  });
-};
 
 module.exports.readUserCompletionsByUserId = (req, res) => {
   const data = { user_id: req.params.user_id };

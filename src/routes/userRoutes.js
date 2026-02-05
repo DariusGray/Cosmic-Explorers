@@ -15,10 +15,5 @@ router.get("/:user_id/completions", [
   controller.readUserCompletionsByUserId,
 ]);
 
-router.put("/:user_id", [
-  controller.readUserByUsername,
-  controller.updateUserById,
-  controller.readUserById,
-]);
 
 module.exports = router;

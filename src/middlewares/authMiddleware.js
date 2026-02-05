@@ -10,7 +10,7 @@ module.exports.requireSameUserParam = (req, res, next) => {
   }
 
   if (paramUserId !== tokenUserId) {
-    return res.status(403).json({ message: "Forbidden" });
+    return res.status(403).json({ message: "Forbidden: Wrong Token or User Id" });
   }
 
   next();
@@ -28,7 +28,7 @@ module.exports.requireSameUserBody = (req, res, next) => {
   }
 
   if (bodyUserId !== tokenUserId) {
-    return res.status(403).json({ message: "Forbidden" });
+    return res.status(403).json({ message: "Forbidden: Wrong Token or User Id" });
   }
 
   next();
