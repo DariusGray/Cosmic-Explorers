@@ -34,8 +34,6 @@ function showHint(gridEl, title, subtitle) {
 // Data helpers
 // ---------------------------
 function getPlanetThemeKey(planetName) {
-  // Map DB planet "name" -> CSS theme keys you already defined in cosmic.css
-  // Adjust only if your DB planet names differ.
   const n = (planetName || "").trim().toLowerCase();
 
   if (n.includes("mercury")) return "mercury-outpost";
@@ -157,7 +155,7 @@ function renderPlanets({ allPlanets, unlockedPlanets }) {
 }
 
 // ---------------------------
-// API calls (using your fetchMethod wrapper)
+// API calls
 // ---------------------------
 function apiGetAllPlanets() {
   return new Promise((resolve, reject) => {
@@ -258,8 +256,6 @@ async function handleUnlockClick() {
 
     renderPlanets({ allPlanets, unlockedPlanets });
 
-    // Optional: auto-apply latest discovered planet theme if backend provides it
-    // (Only if it matches your CSS theme key mapping)
     if (unlockRes?.latest_discovered_planet) {
       const themeKey = getPlanetThemeKey(unlockRes.latest_discovered_planet);
       window.CE_THEME.saveTheme(themeKey);
@@ -275,7 +271,7 @@ async function handleUnlockClick() {
 }
 
 // ---------------------------
-// Land button handler (your original)
+// Land button handler
 // ---------------------------
 document.addEventListener("click", (e) => {
   const btn = e.target.closest(".land-btn");

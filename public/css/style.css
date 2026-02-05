@@ -113,10 +113,6 @@ body {
   cursor: default;
 }
 
-/* IMPORTANT:
-   Prevent the generic row-hover background from overriding medal backgrounds.
-   We re-define the hover for top 3 rows AFTER the generic rule.
-*/
 
 /* Gold row hover (rank 1) */
 #leaderboardBody tr.rank-1:hover {
