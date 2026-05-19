@@ -1,0 +1,146 @@
+:root{
+  --theme-bg-1: #070a1c;
+  --theme-bg-2: #0b1238;
+  --theme-bg-3: #120b1c;
+
+  --theme-accent: #00d2ff;    
+  --theme-accent-2: #9d50bb;
+  --theme-glow: rgba(0, 210, 255, 0.25);
+
+  --planet-title: "Deep Space";
+}
+
+/* Apply theme to the page background */
+body{
+  background: linear-gradient(135deg, var(--theme-bg-1) 0%, var(--theme-bg-2) 50%, var(--theme-bg-3) 100%) !important;
+}
+
+body::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255,255,255,0.07), transparent 40%),
+    radial-gradient(circle at 80% 30%, rgba(255,255,255,0.06), transparent 45%),
+    radial-gradient(circle at 40% 85%, rgba(255,255,255,0.05), transparent 50%);
+  opacity: 0.6;
+  z-index: 0;
+}
+
+main, nav, footer { position: relative; z-index: 1; }
+
+.planet-chip{
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .4rem .8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px);
+  font-size: .9rem;
+}
+
+.theme-hint{
+  border: 1px dashed rgba(255,255,255,0.20);
+  background: rgba(255,255,255,0.04);
+  border-radius: 16px;
+}
+
+.planet-card{
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.05);
+}
+
+.planet-card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 0 22px rgba(0,0,0,0.35);
+  border-color: rgba(255,255,255,0.25);
+}
+
+.planet-card.is-locked{
+  cursor: not-allowed;
+  opacity: .55;
+  filter: grayscale(1);
+}
+
+.planet-card .planet-icon{
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.25);
+  box-shadow: 0 0 18px rgba(0,0,0,0.35);
+  font-size: 1.6rem;
+}
+
+.glow-accent{
+  box-shadow: 0 0 22px var(--theme-glow);
+}
+
+.land-btn{
+  border-color: rgba(255,255,255,0.25);
+}
+.land-btn:hover{
+  box-shadow: 0 0 14px var(--theme-glow);
+}
+
+
+body[data-theme="mercury-outpost"]{
+  --planet-title: "Mercury Outpost";
+  --theme-bg-1: #120a06;
+  --theme-bg-2: #2a140a;
+  --theme-bg-3: #070a1c;
+  --theme-accent: #ff8a3d;
+  --theme-accent-2: #ff3d6e;
+  --theme-glow: rgba(255, 138, 61, 0.25);
+}
+
+body[data-theme="asteroid-relay"]{
+  --planet-title: "Asteroid Relay";
+  --theme-bg-1: #05070f;
+  --theme-bg-2: #0b1a24;
+  --theme-bg-3: #061019;
+  --theme-accent: #58f7c7;
+  --theme-accent-2: #6aa5ff;
+  --theme-glow: rgba(88, 247, 199, 0.22);
+}
+
+body[data-theme="neptune-observatory"]{
+  --planet-title: "Neptune Observatory";
+  --theme-bg-1: #04122a;
+  --theme-bg-2: #061b3b;
+  --theme-bg-3: #050a1c;
+  --theme-accent: #4cc9ff;
+  --theme-accent-2: #7c4dff;
+  --theme-glow: rgba(76, 201, 255, 0.25);
+}
+
+body[data-theme="jupiter-station"]{
+  --planet-title: "Jupiter Station";
+  --theme-bg-1: #0e0b16;
+  --theme-bg-2: #1a132b;
+  --theme-bg-3: #070a1c;
+  --theme-accent: #ffd36b;
+  --theme-accent-2: #ff7ab6;
+  --theme-glow: rgba(255, 211, 107, 0.22);
+}
+
+body[data-theme="golden-planet"]{
+  --planet-title: "Golden Planet";
+  --theme-bg-1: #1a1200;
+  --theme-bg-2: #2a1a00;
+  --theme-bg-3: #070a1c;
+  --theme-accent: #ffd700;
+  --theme-accent-2: #ffb000;
+  --theme-glow: rgba(255, 215, 0, 0.25);
+}
+
+.auth-subtitle {
+  color: rgba(255, 255, 255, 0.75);
+}

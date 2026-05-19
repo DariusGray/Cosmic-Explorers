@@ -7,6 +7,8 @@ Instead of completing challenges for badges alone, users progress through a cosm
 
 The application combines **authentication, challenge management, point tracking, planet unlocking**, and **leaderboards** into a single full-stack web system.
 
+---
+
 ## 👤 User Experience (How the App Works)
 ### 1. User Registration & Login
 - Users register and log in using a username and password.
@@ -74,6 +76,8 @@ The application combines **authentication, challenge management, point tracking,
   - Only the creator of a challenge can edit or delete it (creator_id enforced on backend).
 - Additional protected endpoint:
   - Users can retrieve their completed mission history via a protected route (JWT + ownership check).
+ 
+---
 
 ### Frontend
 - Built with **HTML, CSS, and JavaScript**
@@ -87,6 +91,7 @@ The application combines **authentication, challenge management, point tracking,
 - Challenges page includes owner-only UI actions (Edit/Delete) that appear only for the challenge creator.
 - Profile page dynamically loads and renders the user’s completed missions log from the backend.
 
+---
 
 ## 🔐 Security Considerations
 - Sensitive credentials such as database configuration and JWT secrets are stored in environment variables and are not hardcoded into the source code.
@@ -96,6 +101,66 @@ The application combines **authentication, challenge management, point tracking,
 - Server-side error handling is implemented to prevent sensitive error details from being exposed to clients.
 - Internal errors are logged on the server for debugging purposes, while generic responses such as **“Internal Server Error”** are returned to the client to reduce the risk of information leakage.
 - Ownership checks are enforced for challenge editing/deleting, ensuring only the challenge creator can modify or remove the mission.
+  
+---
+
+## 🍪 Privacy & Cookies
+Cosmic Explorers uses browser-based storage and privacy controls to enhance user experience while maintaining transparency and user control.
+
+### Local Storage and Session Data
+
+The application uses localStorage to persist:
+
+- User authentication tokens (JWT session data)
+- User preferences and settings
+- Cookie consent status and timestamp
+
+This ensures users remain logged in and their preferences are retained across sessions.
+
+### Cookies and Similar Technologies
+The platform may use cookies and browser storage mechanisms to:
+
+- Maintain essential application functionality
+- Remember user preferences and consent choices
+- Improve user experience and performance
+
+At present, cookie usage is primarily limited to essential functionality, with potential for future analytics or enhancement features.
+
+### Cookie Consent Management
+
+A client-side consent system is implemented via cookieConsent.js:
+
+- Users are presented with a consent banner on first visit
+- Users may Accept or Reject non-essential storage
+- Consent decisions are stored in localStorage
+- Users can reset their consent at any time using the exposed API:
+   - `CE_COOKIE.accept()`
+   - `CE_COOKIE.reject()`
+   - `CE_COOKIE.reset()`
+ 
+### Privacy Policy
+
+A dedicated Privacy Policy page (`privacy.html`) is available, outlining:
+- Data collection and usage
+- Storage and retention policies
+- User rights and control over their data
+- Third-party service considerations (if added in future)
+
+### User Rights and Control
+
+Users may:
+- Clear stored data via browser settings
+- Withdraw consent by resetting cookie preferences
+- Request account/data deletion (where applicable)
+
+### Data Protection Approach
+
+Cosmic Explorers follows privacy-focused design principles:
+- Minimal data collection
+- No sale of personal data
+- Separation of authentication and UI storage logic
+- Transparency through explicit consent mechanisms
+---
 
 ## 🧪 Testing
 - API endpoints tested using Postman
